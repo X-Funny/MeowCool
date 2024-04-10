@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">meku</string>
+    <string name="button1">测试</string>
+    <string name="button2">建账</string>
+
 
 </resources>

@@ -1,9 +1,12 @@
 package top.xfunny.meku;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -11,43 +14,21 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    EditText et1;
-    Button bt1;
-
-    @SuppressLint("MissingInflatedId")
-    @Override
+    private Button button1 = null;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.button1= super.findViewById(R.id.button1);
+        button1.setOnClickListener(new View.OnClickListener(){
 
-        et1 = findViewById(R.id.et1);
-        bt1 = findViewById(R.id.bt1);
-
-        bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String dbname = et1.getText().toString();
-                database = new DBProcessor(MainActivity.this,dbname);
-
-
-
-
-
-
-                Toast.makeText(MainActivity.this, "输入的文字已赋值给db变量", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this,DBProcessor.class);
+                startActivity(intent);
 
             }
-
-            private String bridge(String db) {
-                return db;
-            }
-
-            ;
-
-
         });
-
-
     }
 }
 
