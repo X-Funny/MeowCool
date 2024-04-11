@@ -41,11 +41,12 @@ public class DBProcessor extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String databaseName = input.getText().toString(); // 获取输入的文本
-                        // 使用SQLiteOpenHelper创建或打开数据库
                         DatabaseHelper dbHelper = new DatabaseHelper(DBProcessor.this, databaseName);
-                        SQLiteDatabase myDB = dbHelper.getWritableDatabase();
-                        // 这里可以添加创建表等数据库操作
-                        // ...
+                        String message1 = String.format("账簿%s已创建", databaseName);
+                        Toast toast1 = Toast.makeText(DBProcessor.this,message1,Toast.LENGTH_SHORT);
+                        toast1.show();
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
                     }
                 });
 
