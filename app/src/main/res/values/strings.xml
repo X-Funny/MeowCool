@@ -4,6 +4,8 @@
     <string name="button2">建账</string>
     <string name="button3">选择账簿</string>
     <string name="button4">删除账簿</string>
+    <string name="textView1">请选择账簿</string>
+    <string name="button5">关闭账簿</string>
 
 
 </resources>

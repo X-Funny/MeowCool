@@ -9,6 +9,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,8 @@ public class DBProcessor extends AppCompatActivity {
     private Button button2 = null;
     private Button button3 = null;
     private Button button4 = null;
+    private Button button5 = null;
+    private static TextView textView1 = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,10 @@ public class DBProcessor extends AppCompatActivity {
         this.button2 = findViewById(R.id.button2);
         this.button3 = findViewById(R.id.button3);
         this.button4 = findViewById(R.id.button4);
+        this.button5 = findViewById(R.id.button5);
+        this.textView1 = findViewById(R.id.textView1);
+
+
 
         // Create new database
         button2.setOnClickListener(new View.OnClickListener() {
@@ -38,6 +45,7 @@ public class DBProcessor extends AppCompatActivity {
                 builder.setView(input);
 
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String databaseName = String.format("%s.db", input.getText().toString());
@@ -46,6 +54,7 @@ public class DBProcessor extends AppCompatActivity {
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
                         String message = String.format("账簿%s已创建", databaseName);
+
                         Toast.makeText(DBProcessor.this, message, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -57,9 +66,7 @@ public class DBProcessor extends AppCompatActivity {
             }
         });
 
-        // Select existing database
-        Button button3 = findViewById(R.id.button3);
-        Button button4 = findViewById(R.id.button4);
+
 
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +80,21 @@ public class DBProcessor extends AppCompatActivity {
                 showDatabaseDeleteDialog();
             }
         });
+        button5.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                closeSlectedDatabase();
+            }
+        });
+
+
     }
+    public static void setTextView1(){
+        String selectedDatabase = String.format("当前正在使用的账簿:%s",DatabaseSelectDialog.selectedDatabase);
+        textView1.setText(selectedDatabase);
+    }
+
 
     private void showDatabaseSelectDialog() {
         DatabaseSelectDialog dialog = new DatabaseSelectDialog(this);
@@ -84,6 +105,13 @@ public class DBProcessor extends AppCompatActivity {
         DatabaseDeleteDialog dialog = new DatabaseDeleteDialog(this);
         dialog.show();
     }
+
+    private void closeSlectedDatabase(){
+        DatabaseSelectDialog.selectedDatabase = null;
+        textView1.setText("请选择账簿");
+    }
+
+
 
 
 }

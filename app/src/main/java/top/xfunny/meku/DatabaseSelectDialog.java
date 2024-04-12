@@ -41,7 +41,8 @@
             listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             listView.setItemChecked(getCheckeddatabase(), true);
             builder.setView(dialogView);
-    //加入确定按钮
+
+            // 加入确定按钮
             builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -49,12 +50,11 @@
                     System.out.println("已选择" + selectedDatabase);
                     String message = String.format("已选择%s", selectedDatabase);
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-
-
+                    DBProcessor.setTextView1();
                 }
             });
-    //加入取消按钮
 
+            // 加入取消按钮
             builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -62,9 +62,21 @@
                 }
             });
 
+            AlertDialog dialog = builder.create();
 
+            // 检查数据库文件列表是否为空
+            if (databaseFiles.isEmpty()) {
+                // 如果数据库文件列表为空，则设置确定按钮不可点击
+                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    }
+                });
 
-            builder.create().show();
+            }
+
+            dialog.show();
         }
     public int getCheckeddatabase(){
 
@@ -81,19 +93,15 @@
 
         private void getDatabaseFiles() {
             File databaseFolder = new File("/data/data/top.xfunny.meku/databases");
-            File[] files;
-
-            if (databaseFolder.exists() && databaseFolder.isDirectory()) {
-                files = databaseFolder.listFiles();
-                if (files != null) {
-                    for (File file : files) {
-                        if (file.isFile() && file.getName().endsWith(".db")) {
-                            databaseFiles.add(file.getName());
-                        }
+            File[] files = databaseFolder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && file.getName().endsWith(".db")) {
+                        databaseFiles.add(file.getName());
                     }
                 }
-
-            } else {
+            }
+            if (databaseFiles.isEmpty()) {
                 Toast.makeText(context, "没有账簿", Toast.LENGTH_SHORT).show();
             }
         }
