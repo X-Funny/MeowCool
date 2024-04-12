@@ -3,6 +3,7 @@ package top.xfunny.meku;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -142,11 +143,16 @@ public class DatabaseDeleteDialog {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("确认删除？该操作不可恢复！");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("check值为 " + check(selectedFiles, DatabaseSelectDialog.selectedDatabase));
-                if (check(selectedFiles, DatabaseSelectDialog.selectedDatabase).equals("true")) {
-                    closeDatabaseprompt(DatabaseSelectDialog.selectedDatabase);
+                SharedPreferences sharedPref;
+                String selectedDatabase;
+                sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                selectedDatabase = sharedPref.getString("selectedDatabase", "");
+                System.out.println("check值为 " + check(selectedFiles, selectedDatabase));
+                if (check(selectedFiles, selectedDatabase).equals("true")) {
+                    closeDatabaseprompt(selectedDatabase);
                 } else {
                     delete(selectedFiles);
                     System.out.println("执行了 false");

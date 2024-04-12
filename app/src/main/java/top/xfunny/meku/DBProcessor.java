@@ -1,6 +1,8 @@
 package top.xfunny.meku;
 
+import static top.xfunny.meku.DatabaseSelectDialog.saveSelectedDatabase;
 import static top.xfunny.meku.DatabaseSelectDialog.selectedDatabase;
+import static top.xfunny.meku.DatabaseSelectDialog.sharedPref;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -25,8 +27,10 @@ public class DBProcessor extends AppCompatActivity {
     private static TextView textView1 = null;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dbprocessor);
 
@@ -37,6 +41,7 @@ public class DBProcessor extends AppCompatActivity {
         this.textView1 = findViewById(R.id.textView1);
         SharedPreferences sharedPref = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         String selectedDatabase = sharedPref.getString("selectedDatabase", "");
+
         if (!selectedDatabase.isEmpty()) {
             // 如果之前有保存的数据库名称，则在这里进行处理
             // 例如，设置到textView1中显示
@@ -97,7 +102,7 @@ public class DBProcessor extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                closeSlectedDatabase();
+                closeSlectedDatabase(DBProcessor.this);
             }
         });
 
@@ -126,10 +131,20 @@ public class DBProcessor extends AppCompatActivity {
         dialog.show();
     }
 
-    private void closeSlectedDatabase(){
-        selectedDatabase = null;
-        DatabaseSelectDialog.saveSelectedDatabase(selectedDatabase);
-        textView1.setText("请选择账簿");
+    private void closeSlectedDatabase(Context context){
+
+        if (sharedPref != null) {
+            // 调用saveSelectedDatabase方法
+            DatabaseSelectDialog.saveSelectedDatabase(null);
+            textView1.setText("请选择账簿");
+        } else {
+            // 处理sharedPref为空的情况，这里可以添加适当的处理代码
+            sharedPref = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+            DatabaseSelectDialog.saveSelectedDatabase(null);
+            textView1.setText("请选择账簿");
+        }
+
+
     }
 
 

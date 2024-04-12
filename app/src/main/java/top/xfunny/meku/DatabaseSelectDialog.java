@@ -17,7 +17,7 @@ public class DatabaseSelectDialog {
 
     private static Context context;
     private List<String> databaseFiles;
-    private static SharedPreferences sharedPref;
+    static SharedPreferences sharedPref;
     static String selectedDatabase;
 
     public DatabaseSelectDialog(Context context) {
