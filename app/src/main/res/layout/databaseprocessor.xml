@@ -4,13 +4,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- Database Select Dialog Layout -->
+    <ListView
+        android:id="@+id/database_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Database Delete Dialog Layout -->
     <ListView
         android:id="@+id/database_delete"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" /> <!-- Initially hidden -->
+
+    <!-- Database Delete Confirm Dialog Layout -->
     <ListView
         android:id="@+id/database_delete_confirm"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" /> <!-- Initially hidden -->
 
 </LinearLayout>
