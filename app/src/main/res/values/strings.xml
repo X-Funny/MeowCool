@@ -6,6 +6,19 @@
     <string name="button4">删除账簿</string>
     <string name="textView1">请选择账簿</string>
     <string name="button5">关闭账簿</string>
+    <string name="title_dialog_setaccount">添加账簿</string>
+    <string name="button_ok">确定</string>
+    <string name="button_cancel">取消</string>
+    <string name="title_dailog_selectdatabase">请选择账簿</string>
+    <string name="accountdatabase">账簿</string>
+    <string name="accountdatabasecreated">已创建</string>
+    <string name="selected">已选择</string>
+    <string name="title_dialog_deletedatabase">请选择需要删除的账簿</string>
+    <string name="noaccountdatabases">没有账簿</string>
+    <string name="useddatabase">当前正在使用的账簿</string>
+    <string name="database_confirmdelete">确认删除？该操作不可恢复！</string>
+    <string name="deleteddatabase">已删除选中的账簿</string>
+    <string name="closedatabaseprompt">未关闭，无法删除</string>
 
 
 </resources>

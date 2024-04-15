@@ -24,8 +24,9 @@ public class TestActivity extends AppCompatActivity {
         this.button4 = findViewById(R.id.button4);
         this.button5 = findViewById(R.id.button5);
         this.textView1 = findViewById(R.id.textView1);
+        DatabaseProcessor.setContext(this);
 
-        // 这里添加按钮的点击事件监听器
+
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,7 +55,12 @@ public class TestActivity extends AppCompatActivity {
             }
         });
 
-        // 初始化文本显示
-        DatabaseProcessor.setTextView1(this);
+
+        if (DatabaseProcessor.getusedDatabase() == true){
+            textView1.setText(R.string.textView1);
+        }else {
+        DatabaseProcessor.setTextView1(this);}
+
+
     }
 }

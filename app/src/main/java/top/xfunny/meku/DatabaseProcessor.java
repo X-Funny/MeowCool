@@ -1,11 +1,15 @@
 package top.xfunny.meku;
 
+import static android.content.Context.MODE_PRIVATE;
+
+
+
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,15 +30,21 @@ public class DatabaseProcessor {
     private static SharedPreferences sharedPref;
     private static String selectedDatabase;
     private static List<String> databaseFiles;
+    private static Context context; // 添加静态的 Context 变量
+
+    // 设置静态的 Context
+    public static void setContext(Context context) {
+        DatabaseProcessor.context = context;
+    }
 
     public static void createDatabase(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("添加账簿");
+        builder.setTitle(R.string.title_dialog_setaccount);
         final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String databaseName = String.format("%s.db", input.getText().toString());
@@ -42,13 +52,16 @@ public class DatabaseProcessor {
                 DatabaseHelper dbHelper = new DatabaseHelper(context, databaseName);
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-                String message = String.format("账簿%s已创建", databaseName);
 
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+
+
+
+                Toast.makeText(context, R.string.accountdatabase+databaseName+R.string.accountdatabasecreated, Toast.LENGTH_SHORT).show();
             }
         });
 
-        builder.setNegativeButton("取消", null);
+        builder.setNegativeButton(R.string.button_cancel, null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -64,10 +77,10 @@ public class DatabaseProcessor {
             System.out.println("已清空");
 
 
-            TestActivity.textView1.setText("请选择账簿");
+            TestActivity.textView1.setText(R.string.textView1);
         } else {
 
-            sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+            sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
 
 
             String selectedDatabase = sharedPref.getString("selectedDatabase", "");
@@ -76,7 +89,7 @@ public class DatabaseProcessor {
             System.out.println("已清空");
 
 
-            TestActivity.textView1.setText("请选择账簿");
+            TestActivity.textView1.setText(R.string.textView1);
         }
     }
 
@@ -84,9 +97,9 @@ public class DatabaseProcessor {
 
     public static void showDatabaseSelectDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("请选择账簿");
+        builder.setTitle(R.string.title_dailog_selectdatabase);
 
-        sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
         selectedDatabase = sharedPref.getString("selectedDatabase", "");
 
         getDatabaseFiles(context);
@@ -100,17 +113,17 @@ public class DatabaseProcessor {
         listView.setItemChecked(getCheckeddatabase(), true);
         builder.setView(dialogView);
 
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 selectedDatabase = getSelectedDatabase(listView);
-                Toast.makeText(context, "已选择 " + selectedDatabase, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.selected + selectedDatabase+"", Toast.LENGTH_SHORT).show();
                 saveSelectedDatabase(context, selectedDatabase);
                 setTextView1(context);
             }
         });
 
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -133,9 +146,9 @@ public class DatabaseProcessor {
 
     public static void showDatabaseDeleteDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("请选择需要删除的账簿");
+        builder.setTitle(R.string.title_dialog_deletedatabase);
 
-        sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
         selectedDatabase = sharedPref.getString("selectedDatabase", "");
 
         getDatabaseFiles(context);
@@ -148,14 +161,14 @@ public class DatabaseProcessor {
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         builder.setView(dialogView);
 
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 deleteSelectedDatabases(context, listView);
             }
         });
 
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -163,6 +176,16 @@ public class DatabaseProcessor {
         });
 
         AlertDialog dialog = builder.create();
+
+        if (databaseFiles.isEmpty()) {
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                }
+            });
+        }
+
         dialog.show();
     }
 
@@ -179,7 +202,7 @@ public class DatabaseProcessor {
             }
         }
         if (databaseFiles.isEmpty()) {
-            Toast.makeText(context, "没有账簿", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.noaccountdatabases, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -202,14 +225,14 @@ public class DatabaseProcessor {
         editor.apply();
     }
 
+    @SuppressLint("SetTextI18n")
     public static void setTextView1(Context context) {
-        sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
         selectedDatabase = sharedPref.getString("selectedDatabase", "");
 
         TextView textView1 = ((AppCompatActivity) context).findViewById(R.id.textView1);
 
-        String selectedDatabase1 = String.format("当前正在使用的账簿: %s", selectedDatabase);
-        textView1.setText(selectedDatabase1);
+        textView1.setText(R.string.useddatabase+selectedDatabase);
     }
 
     private static int getCheckeddatabase() {
@@ -227,14 +250,14 @@ public class DatabaseProcessor {
         File[] selectedFiles = getSelectedFiles(context, listView);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("确认删除？该操作不可恢复！");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.database_confirmdelete);
+        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 deleteDatabases(context, selectedFiles); // 这里传入了Context
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -267,7 +290,7 @@ public class DatabaseProcessor {
                 if (databaseFile.exists()) {
                     if (databaseFile.delete()) {
                         databaseFiles.remove(file.getName());
-                        Toast.makeText(context, "已删除选中的账簿", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.deleteddatabase, Toast.LENGTH_SHORT).show();
                         System.out.println("已删除" + databaseFile.getAbsolutePath());
                     } else {
                         System.out.println("无法删除文件: " + databaseFile.getAbsolutePath());
@@ -294,8 +317,8 @@ public class DatabaseProcessor {
 
     private static void closeDatabasePrompt(Context context, String databaseName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(databaseName + "未关闭，无法删除");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setTitle(databaseName + R.string.closedatabaseprompt);
+        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -314,4 +337,16 @@ public class DatabaseProcessor {
         }
         return -1;
     }
+
+
+    public static boolean getusedDatabase() {
+        if (context == null) {
+            throw new IllegalStateException("Context has not been set. Call setContext(Context) before using this method.");
+        }
+
+        SharedPreferences sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        String selectedDatabase = sharedPref.getString("selectedDatabase", "");
+        return selectedDatabase.isEmpty();
+    }
+
 }

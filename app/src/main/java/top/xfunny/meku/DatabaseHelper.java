@@ -14,7 +14,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // 在这里创建表和初始化数据
+        String createAccounting_subjectsTable = "CREATE TABLE IF NOT EXISTS accounting_subjects (" +
+                "id INTEGER PRIMARY KEY," +
+                "code TEXT NOT NULL," +
+                "level INTEGER NOT NULL," +
+                "name TEXT NOT NULL" +
+                ")";
+        db.execSQL(createAccounting_subjectsTable);
+        String createAccountingVouchersTable = "CREATE TABLE IF NOT EXISTS accounting_vouchers (" +
+                "id INTEGER PRIMARY KEY," +
+                "date TEXT NOT NULL," +
+                "number TEXT NOT NULL," +
+                "summary TEXT NOT NULL," +
+                "subject_code TEXT NOT NULL," +
+                "subject_name TEXT NOT NULL," +
+                "dc_flag TEXT NOT NULL," +
+                "amount REAL NOT NULL" +
+                ")";
+        db.execSQL(createAccountingVouchersTable);
+
+
     }
 
     @Override
