@@ -1,4 +1,4 @@
-package top.xfunny.meku;
+package top.xfunny.meowcool;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("top.xfunny.meku", appContext.getPackageName());
+        assertEquals("top.xfunny.meowcool", appContext.getPackageName());
     }
 }

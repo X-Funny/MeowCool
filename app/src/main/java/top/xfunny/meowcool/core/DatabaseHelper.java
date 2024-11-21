@@ -1,4 +1,4 @@
-package top.xfunny.meku;
+package top.xfunny.meowcool.core;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,26 +14,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         String createAccounting_subjectsTable = "CREATE TABLE IF NOT EXISTS accounting_subjects (" +
-                "id INTEGER PRIMARY KEY," +
-                "code TEXT NOT NULL," +
-                "level INTEGER NOT NULL," +
-                "name TEXT NOT NULL" +
+                "id INTEGER PRIMARY KEY," +//序号
+                "code TEXT NOT NULL," +//科目代码
+                "name TEXT NOT NULL" +//科目名称
                 ")";
         db.execSQL(createAccounting_subjectsTable);
         String createAccountingVouchersTable = "CREATE TABLE IF NOT EXISTS accounting_vouchers (" +
-                "id INTEGER PRIMARY KEY," +
-                "date TEXT NOT NULL," +
-                "number TEXT NOT NULL," +
-                "summary TEXT NOT NULL," +
-                "subject_code TEXT NOT NULL," +
-                "subject_name TEXT NOT NULL," +
-                "dc_flag TEXT NOT NULL," +
-                "amount REAL NOT NULL" +
+                "id INTEGER PRIMARY KEY," +//序号
+                "date TEXT NOT NULL," +//日期
+                "number TEXT NOT NULL," +//凭证编号
+                "summary TEXT NOT NULL," +//摘要
+                "debit_subject_code TEXT NOT NULL," +//借方科目代码
+                "debit_amount REAL NOT NULL," +//借方科目金额
+                "credit_subject_code TEXT NOT NULL," +//贷方科目代码
+                "credit_amount REAL NOT NULL" +//贷方科目金额
                 ")";
         db.execSQL(createAccountingVouchersTable);
-
-
     }
 
     @Override

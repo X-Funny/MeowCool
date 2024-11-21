@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "meku"
+rootProject.name = "meowcool"
 include(":app")

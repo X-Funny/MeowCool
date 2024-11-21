@@ -1,4 +1,4 @@
-package top.xfunny.meku;
+package top.xfunny.meowcool;
 
 import org.junit.Test;
 

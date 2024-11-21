@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_select_all"
+        android:title="全选"
+        android:icon="@drawable/select_all_24px"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_deselect_all"
+        android:title="全不选"
+        android:icon="@drawable/rounded_deselect_24"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
+</menu>
