@@ -2,10 +2,9 @@ package top.xfunny.meowcool.core;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import static top.xfunny.meowcool.test_page.DatabaseProcessor.closeDatabasePrompt;
-
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -85,7 +84,7 @@ public class DatabaseManager {
 
     }
 
-    public static void open(Context context, ListView listView) {//设置需要操作的账套
+    public static void selectDatabase(Context context, ListView listView) {//设置需要操作的账套,即将弃用
         StringBuilder selectedItems = new StringBuilder();
         for (int i = 0; i < listView.getCount(); i++) {
             if (listView.isItemChecked(i)) {
@@ -101,20 +100,28 @@ public class DatabaseManager {
         editor.apply();
     }
 
-    public static void open(Context context, String selectedDatabase) {//设置需要操作的账套
-
+    public static void selectDatabase(Context context, String selectedDatabase) {//设置需要操作的账套
         sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("selectedDatabase", selectedDatabase);
         editor.apply();
     }
 
-    public static void close(Context context) {//关闭账套
-        sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        sharedPref.edit().putString("selectedDatabase", "").apply();
+    public static SQLiteDatabase openDatabase(Context context) {//打开账套,用于编辑
+        String DatabaseName = getSelectedDatabaseName(context);
+        return SQLiteDatabase.openDatabase(
+                context.getDatabasePath(DatabaseName).getPath(),
+                null,
+                SQLiteDatabase.OPEN_READWRITE
+        );
     }
 
-    public static String getSelectedDatabase(Context context) {//读取目前正在操作的账套
+    public static void close(Context context) {//与账套断开连接
+        sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        sharedPref.edit().putString("selectedDatabase", null).apply();
+    }
+
+    public static String getSelectedDatabaseName(Context context) {//读取目前正在操作的账套名称
         sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
         return sharedPref.getString("selectedDatabase", "");
     }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".initial_page.ui.home.HomeFragment">
+    tools:context=".page.initial_page.ui.home.HomeFragment">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -82,13 +82,10 @@
                 android:textAppearance="?attr/textAppearanceTitleSmall" />
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/account_set_management"
                 style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:clickable="true"
-                android:focusable="true"
                 android:padding="4dp">
 
                 <LinearLayout
@@ -98,11 +95,10 @@
                     app:cardCornerRadius="15dp">
 
                     <LinearLayout
-                        android:id="@+id/account"
+                        android:id="@+id/account_management"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
-
                         android:orientation="horizontal">
 
                         <ImageView
@@ -129,6 +125,42 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="管理您的账套"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/account_subject_management"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="14dp"
+                            android:src="@drawable/rounded_credit_card_gear_24" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="20dp"
+                            android:layout_marginStart="10dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="科目管理"
+                                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="管理该账套内的科目"
                                 android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
                         </LinearLayout>
 

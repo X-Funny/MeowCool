@@ -1,0 +1,39 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="16dp"
+    android:paddingVertical="8dp">
+
+    <!-- 缩进指示器 -->
+    <Space
+        android:id="@+id/spaceIndent"
+        android:layout_width="16dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="8dp"/>
+
+    <!-- 展开/折叠图标 -->
+    <ImageView
+        android:id="@+id/ivExpand"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        android:src="@drawable/expand_content_24px"/>
+
+    <!-- 科目信息 -->
+    <TextView
+        android:id="@+id/tvSubjectName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="16sp"/>
+
+    <!-- 操作菜单 -->
+    <ImageButton
+        android:id="@+id/btnMenu"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/more_vert_24px"/>
+</LinearLayout>

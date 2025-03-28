@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="top.xfunny.meowcool.initial_page.ui.home.HomeFragment"
+        android:name="top.xfunny.meowcool.page.initial_page.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_detail"
-        android:name="top.xfunny.meowcool.initial_page.ui.detail.DetailFragment"
+        android:name="top.xfunny.meowcool.page.initial_page.ui.detail.DetailFragment"
         android:label="@string/title_detail"
         tools:layout="@layout/fragment_detail" />
 
     <fragment
         android:id="@+id/navigation_chart"
-        android:name="top.xfunny.meowcool.initial_page.ui.chart.ChartFragment"
+        android:name="top.xfunny.meowcool.page.initial_page.ui.chart.ChartFragment"
         android:label="@string/title_chart"
         tools:layout="@layout/fragment_chart" />
 
     <fragment
         android:id="@+id/navigation_more"
-        android:name="top.xfunny.meowcool.initial_page.ui.more.MoreFragment"
+        android:name="top.xfunny.meowcool.page.initial_page.ui.more.MoreFragment"
         android:label="@string/title_more"
         tools:layout="@layout/fragment_more" />
 </navigation>
