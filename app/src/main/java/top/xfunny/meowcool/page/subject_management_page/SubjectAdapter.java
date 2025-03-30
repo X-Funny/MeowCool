@@ -32,10 +32,21 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+    /**
+     * 将树形结构的节点展平为列表
+     * 此方法用于遍历树形结构的节点，并将它们展平为一个列表，同时记录每个节点所在的层级
+     * 主要用于在用户界面中以列表形式展示树形结构的数据，便于用户浏览
+     *
+     * @param nodes    树形结构的节点列表，代表待展平的节点
+     * @param level    当前节点所在的层级，根节点层级为0，每向下一层递增1
+     */
     private void flattenTree(List<SubjectNode> nodes, int level) {
         for (SubjectNode node : nodes) {
+            // 设置当前节点的层级
             node.level = level;
+            // 将当前节点添加到可见节点列表中
             visibleNodes.add(node);
+            // 如果当前节点被展开，则递归展平其子节点
             if (node.isExpanded) {
                 flattenTree(node.children, level + 1);
             }
@@ -52,16 +63,17 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        // 获取当前位置的科目节点
         SubjectNode node = visibleNodes.get(position);
 
-        // 设置缩进
+        // 根据节点层级计算缩进宽度
         int indentPx = (int) (node.level * 16 * context.getResources().getDisplayMetrics().density);
         holder.spaceIndent.getLayoutParams().width = indentPx;
 
-        // 科目名称
+        // 设置科目名称
         holder.tvSubjectName.setText(node.name);
 
-        // 展开/折叠图标处理
+        // 处理展开/折叠图标
         if (!node.children.isEmpty()) {
             holder.ivExpand.setVisibility(View.VISIBLE);
             // 根据展开状态设置不同图标
@@ -71,15 +83,18 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                 holder.ivExpand.setImageResource(R.drawable.keyboard_arrow_right_24px);
             }
 
+            // 设置图标点击事件，用于展开或折叠科目
             holder.ivExpand.setOnClickListener(v -> {
                 node.isExpanded = !node.isExpanded;
                 int currentPosition = holder.getAdapterPosition();
 
+                // 展开子节点
                 if (node.isExpanded) {
                     int insertPosition = currentPosition + 1;
                     int insertCount = flattenSubNodes(node.children, node.level + 1, insertPosition);
                     notifyItemRangeInserted(insertPosition, insertCount);
                 } else {
+                    // 折叠子节点
                     int removeCount = countCollapsedNodes(node);
                     visibleNodes.subList(currentPosition + 1, currentPosition + 1 + removeCount).clear();
                     notifyItemRangeRemoved(currentPosition + 1, removeCount);
@@ -88,6 +103,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                 notifyItemChanged(currentPosition);
             });
         } else {
+            // 如果没有子节点，隐藏展开/折叠图标
             holder.ivExpand.setVisibility(View.GONE);
         }
     }

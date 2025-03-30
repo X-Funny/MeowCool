@@ -45,35 +45,41 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     private SubjectAdapter adapter;
 
+    /**
+     * 主题管理页面的创建方法
+     * 该方法在活动初始化时调用，用于设置活动的布局、初始化数据库和视图组件
+     * @param savedInstanceState 保存的实例状态，如果活动被重新创建（如屏幕旋转），则可用于恢复之前的状态
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_subject_management_page);
+        EdgeToEdge.enable(this); // 启用边缘到边缘的布局支持，以适应不同设备的屏幕边缘
+        setContentView(R.layout.activity_subject_management_page); // 设置活动的布局资源文件
+
+        // 设置主视图的窗口嵌入监听器，以处理系统栏（如状态栏、导航栏）的显示
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars()); // 获取系统栏的 insets
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom); // 根据系统栏的大小调整视图的内边距
             return insets;
         });
 
-        toolbar();
+        toolbar(); // 初始化工具栏
 
+        db = DatabaseManager.openDatabase(this); // 打开数据库
+        subjectManager = new SubjectManager(db); // 创建 SubjectManager 实例，用于管理主题
 
-        db = DatabaseManager.openDatabase(this);
-        subjectManager = new SubjectManager(db);
+        RecyclerView recyclerView = findViewById(R.id.rvSubjects); // 获取 RecyclerView 实例
+        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // 设置 RecyclerView 的布局管理器为LinearLayoutManager
+        adapter = new SubjectAdapter(this); // 创建 SubjectAdapter 实例
+        recyclerView.setAdapter(adapter); // 设置 RecyclerView 的适配器
 
-        RecyclerView recyclerView = findViewById(R.id.rvSubjects);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new SubjectAdapter(this);
-        recyclerView.setAdapter(adapter);
-
-        loadData();
-        testBtn();
+        loadData(); // 加载数据到 RecyclerView 中
+        testBtn(); // 初始化测试按钮
     }
 
     private void loadData() {
-        List<SubjectNode> rootNodes = SubjectNode.buildSubjectTree(db);//使用返回的科目结构
-        adapter.setData(rootNodes);//将其应用与adapter中
+        List<SubjectNode> rootNodes = SubjectNode.buildSubjectTree(db);
+        adapter.setData(rootNodes);
     }
 
     private void toolbar() {
@@ -146,46 +152,51 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
     }
 
     private void showAddSubjectDialog() {
-        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
-                .setTitle("添加科目")
-                .setView(R.layout.dialog_add_subject)
-                .create();
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+        builder.setTitle("添加科目");
+        builder.setView(R.layout.dialog_add_subject);
 
-        dialog.setOnShowListener(dialogInterface -> {
+        // 使用setPositiveButton和setNegativeButton来添加确认和取消按钮
+        builder.setPositiveButton("确认", (dialog, which) -> {
             // 初始化视图
-            AutoCompleteTextView etParent = dialog.findViewById(R.id.etParentSubject);
-            EditText etName = dialog.findViewById(R.id.etSubjectName);
-            MaterialButtonToggleGroup toggleGroup = dialog.findViewById(R.id.tgBalanceDirection);
-            Button btnConfirm = dialog.findViewById(R.id.btnConfirm);
-            Button btnCancel = dialog.findViewById(R.id.btnCancel);
+            AlertDialog alertDialog = (AlertDialog) dialog;
+            AutoCompleteTextView etParent = alertDialog.findViewById(R.id.etParentSubject);
+            EditText etName = alertDialog.findViewById(R.id.etSubjectName);
+            MaterialButtonToggleGroup toggleGroup = alertDialog.findViewById(R.id.tgBalanceDirection);
 
+            // 获取输入值
+            String subjectName = etName.getText().toString().trim();
+            SubjectNode selectedParent = (SubjectNode) etParent.getTag();
+            int direction = toggleGroup.getCheckedButtonId() == R.id.btnDebit ? 1 : -1;
+
+            // 验证并插入新科目
+            if (TextUtils.isEmpty(subjectName)) {
+                etName.setError("科目名称不能为空");
+                return;
+            }
+
+            insertNewSubject(subjectName, direction, selectedParent);
+            dialog.dismiss();
+        });
+
+        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+
+        // 创建并显示对话框
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
             // 加载父科目列表
+            AlertDialog alertDialog = (AlertDialog) dialogInterface;
+            AutoCompleteTextView etParent = alertDialog.findViewById(R.id.etParentSubject);
             loadParentSubjects(etParent);
 
             // 设置默认选择"借"
+            MaterialButtonToggleGroup toggleGroup = alertDialog.findViewById(R.id.tgBalanceDirection);
             toggleGroup.check(R.id.btnDebit);
-
-            // 确认按钮点击
-            btnConfirm.setOnClickListener(v -> {
-                String subjectName = etName.getText().toString().trim();
-                SubjectNode selectedParent = (SubjectNode) etParent.getTag();
-                int direction = toggleGroup.getCheckedButtonId() == R.id.btnDebit ? 1 : -1;
-
-                if (TextUtils.isEmpty(subjectName)) {
-                    etName.setError("科目名称不能为空");
-                    return;
-                }
-
-                insertNewSubject(subjectName, direction, selectedParent);
-                dialog.dismiss();
-            });
-
-            // 取消按钮
-            btnCancel.setOnClickListener(v -> dialog.dismiss());
         });
 
         dialog.show();
     }
+
 
     private void loadParentSubjects(AutoCompleteTextView etParent) {
         List<SubjectNode> allSubjects = SubjectNode.getAllSubjects(db);
@@ -233,7 +244,8 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_add) {
-            showAddSubjectDialog();
+            //showAddSubjectDialog();
+            insertTestData();
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -3,6 +3,8 @@ package top.xfunny.meowcool.core.subject;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,23 +40,35 @@ public class SubjectNode {
     }
 
 
+    /**
+     * 构建科目树结构
+     * 该方法从数据库中读取科目信息，并将其构建成一个树形结构，以便于展示科目之间的层级关系
+     *
+     * @param db SQLiteDatabase对象，用于执行SQL查询
+     * @return 返回根科目节点列表，每个根节点都是一个树的起点
+     */
     public static List<SubjectNode> buildSubjectTree(SQLiteDatabase db) {
+        // 存储所有节点的列表
         List<SubjectNode> allNodes = new ArrayList<>();
+        // 通过UUID映射节点，便于快速查找
         Map<String, SubjectNode> nodeMap = new HashMap<>();
 
         // 查询科目及父节点信息
-        String sql = "SELECT s.uuid, s.name, c.ancestor_uuid as parent_uuid " +
+        String sql = "SELECT s.uuid, s.name, c.ancestor_uuid as parent_uuid, s.path " +
                 "FROM accounting_subjects s " +
                 "LEFT JOIN accounting_subject_closure c " +
                 "ON s.uuid = c.descendant_uuid AND c.depth = 1";
 
-        try (Cursor cursor = db.rawQuery(sql, null)) {//扫描并添加树状节点
+        // 扫描并添加树状节点
+        try (Cursor cursor = db.rawQuery(sql, null)) {
             while (cursor.moveToNext()) {
                 String uuid = cursor.getString(0);
                 String name = cursor.getString(1);
-                String path = cursor.getString(2);
-                String parentUuid = cursor.isNull(3) ? null : cursor.getString(3);
-
+                // 确定是否有父节点
+                String parentUuid = cursor.isNull(2) ? null : cursor.getString(2);
+                String path = cursor.getString(3);
+                System.out.println("正在扫描，扫描结果：uuid:" + uuid + " name:" + name + " parentUuid:" + parentUuid);
+                // 创建节点并添加到节点列表和映射中
                 SubjectNode node = new SubjectNode(uuid, name, parentUuid, path);
                 allNodes.add(node);
                 nodeMap.put(uuid, node);
@@ -64,16 +78,19 @@ public class SubjectNode {
         // 构建树结构
         List<SubjectNode> rootNodes = new ArrayList<>();
         for (SubjectNode node : allNodes) {
+            // 如果节点没有父节点，则将其作为根节点
             if (node.parentUuid == null) {
                 rootNodes.add(node);
             } else {
+                // 如果节点有父节点，尝试将其添加到父节点的子节点列表中
                 SubjectNode parent = nodeMap.get(node.parentUuid);
                 if (parent != null) {
                     parent.children.add(node);
                 }
             }
         }
-        return rootNodes;//返回科目结构
+        // 返回根节点列表，即完整的科目树结构
+        return rootNodes;
     }
 
     public static List<SubjectNode> getAllSubjects(SQLiteDatabase db) {
@@ -92,5 +109,18 @@ public class SubjectNode {
             }
         }
         return subjects;
+    }
+
+    @NonNull
+    public String toString() {
+        return "SubjectNode{" +
+                "uuid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
+                ", parentUuid='" + parentUuid + '\'' +
+                ", children=" + children +
+                ", level=" + level +
+                ", isExpanded=" + isExpanded +
+                ", path='" + path + '\'' +
+                '}';
     }
 }

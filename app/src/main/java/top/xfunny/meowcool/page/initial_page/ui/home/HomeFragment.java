@@ -10,6 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+
+import top.xfunny.meowcool.R;
 import top.xfunny.meowcool.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -26,6 +29,10 @@ public class HomeFragment extends Fragment {
 
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+        fab();
+
+
         return root;
     }
 
@@ -33,5 +40,16 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void fab() {
+        ExtendedFloatingActionButton fab = binding.fabAdd;
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(
+                    v -> {
+                        AddTransactionsBottomSheetDialogFragment bottomSheet = new  AddTransactionsBottomSheetDialogFragment();
+                        bottomSheet.show(getChildFragmentManager(), "AddTransactionsBottomSheetDialogFragment");
+                    }
+            );
     }
 }

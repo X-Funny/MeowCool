@@ -1,12 +1,16 @@
 [versions]
 agp = "8.7.2"
+cardview = "1.0.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
 material = "1.10.0"
 constraintlayout = "2.1.4"
+materialVersion = "1.12.0"
+navigationCompose = "2.8.3"
 navigationFragment = "2.6.0"
+navigationFragmentVersion = "2.8.3"
 navigationUi = "2.6.0"
 lifecycleLivedataKtx = "2.6.1"
 lifecycleViewmodelKtx = "2.6.1"
@@ -15,21 +19,36 @@ lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.7.0"
 composeBom = "2023.08.00"
 activity = "1.8.0"
+legacySupportV4 = "1.0.0"
+navigationUiVersion = "2.8.3"
+pageindicatorview = "1.0.3"
+pageindicatorviewVersion = "v1.0.1"
+recyclerview = "1.4.0"
+viewpager2 = "1.1.0"
 
 [libraries]
+androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
+androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigationCompose" }
+androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigationCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+material-v1120 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
+navigation-fragment-v283 = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationFragmentVersion" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+navigation-ui-v283 = { module = "androidx.navigation:navigation-ui", version.ref = "navigationUiVersion" }
+pageindicatorview = { module = "com.romandanylyk:pageindicatorview", version.ref = "pageindicatorview" }
+romandanylyk-pageindicatorview = { module = "com.github.romandanylyk:PageIndicatorView", version.ref = "pageindicatorviewVersion" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -38,6 +57,9 @@ ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

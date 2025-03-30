@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
 }
 
+
 android {
     namespace = "top.xfunny.meowcool"
     compileSdk = 34
@@ -32,7 +33,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -44,22 +44,24 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
+    implementation(libs.material.v1120)
+    implementation (libs.viewpager2)
     val nav_version = "2.8.3"
 
     // Jetpack Compose integration
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation(libs.navigation.compose)
 
     // Views/Fragments integration
-    implementation("androidx.navigation:navigation-fragment:$nav_version")
-    implementation("androidx.navigation:navigation-ui:$nav_version")
+    implementation(libs.navigation.fragment.v283)
+    implementation(libs.navigation.ui.v283)
 
     // Feature module support for Fragments
-    implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
+    implementation(libs.androidx.navigation.dynamic.features.fragment)
 
     // Testing Navigation
-    androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
+    androidTestImplementation(libs.androidx.navigation.testing)
 
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.androidx.cardview)
+
+    implementation(libs.romandanylyk.pageindicatorview)
 }
