@@ -1,19 +1,17 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/account_card"
+    style="?attr/materialCardViewFilledStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="?attr/materialCardViewFilledStyle"
+    android:checkable="true"
     android:clickable="true"
-    android:focusable="true"
-    android:checkable="true">
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
-        >
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/account_card_title"
@@ -26,7 +24,7 @@
             android:id="@+id/account_create_time_sub_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:text="Description" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

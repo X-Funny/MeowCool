@@ -23,9 +23,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import top.xfunny.meowcool.R;
-import top.xfunny.meowcool.page.account_management_page.AccountManagementPageActivity;
 import top.xfunny.meowcool.core.DatabaseManager;
 import top.xfunny.meowcool.databinding.FragmentMoreBinding;
+import top.xfunny.meowcool.page.account_management_page.AccountManagementPageActivity;
 import top.xfunny.meowcool.page.initial_page.ui.home.HomeViewModel;
 import top.xfunny.meowcool.page.subject_management_page.SubjectManagementPageActivity;
 import top.xfunny.meowcool.page.test_page.TestActivity;

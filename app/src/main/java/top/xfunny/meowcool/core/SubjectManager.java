@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class SubjectManager {
     private SQLiteDatabase db;
 
-    public SubjectManager(SQLiteDatabase db){
+    public SubjectManager(SQLiteDatabase db) {
         this.db = db;
     }
 

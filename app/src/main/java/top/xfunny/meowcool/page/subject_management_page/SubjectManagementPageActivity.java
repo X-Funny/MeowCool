@@ -29,7 +29,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.dialog.MaterialDialogs;
 
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +47,7 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
     /**
      * 主题管理页面的创建方法
      * 该方法在活动初始化时调用，用于设置活动的布局、初始化数据库和视图组件
+     *
      * @param savedInstanceState 保存的实例状态，如果活动被重新创建（如屏幕旋转），则可用于恢复之前的状态
      */
     @Override
@@ -90,7 +90,7 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
-    private void testBtn(){//科目添加测试按钮，即将删除
+    private void testBtn() {//科目添加测试按钮，即将删除
         Button btnTest = findViewById(R.id.fabAdd);
         btnTest.setOnClickListener(v -> showAddSubjectDialog());
     }

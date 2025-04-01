@@ -12,8 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
-import top.xfunny.meowcool.R;
 import top.xfunny.meowcool.databinding.FragmentHomeBinding;
+import top.xfunny.meowcool.page.initial_page.ui.home.BottomSheetDialog.AddTransactionsBottomSheetDialogFragment;
 
 public class HomeFragment extends Fragment {
 
@@ -44,12 +44,12 @@ public class HomeFragment extends Fragment {
 
     private void fab() {
         ExtendedFloatingActionButton fab = binding.fabAdd;
-            fab.setVisibility(View.VISIBLE);
-            fab.setOnClickListener(
-                    v -> {
-                        AddTransactionsBottomSheetDialogFragment bottomSheet = new  AddTransactionsBottomSheetDialogFragment();
-                        bottomSheet.show(getChildFragmentManager(), "AddTransactionsBottomSheetDialogFragment");
-                    }
-            );
+        fab.setVisibility(View.VISIBLE);
+        fab.setOnClickListener(
+                v -> {
+                    AddTransactionsBottomSheetDialogFragment bottomSheet = new AddTransactionsBottomSheetDialogFragment();
+                    bottomSheet.show(getChildFragmentManager(), "AddTransactionsBottomSheetDialogFragment");
+                }
+        );
     }
 }

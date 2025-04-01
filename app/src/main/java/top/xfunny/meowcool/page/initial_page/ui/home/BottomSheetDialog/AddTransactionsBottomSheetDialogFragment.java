@@ -1,4 +1,4 @@
-package top.xfunny.meowcool.page.initial_page.ui.home;
+package top.xfunny.meowcool.page.initial_page.ui.home.BottomSheetDialog;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,13 +12,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.rd.PageIndicatorView;
 
 import top.xfunny.meowcool.R;
 
 public class AddTransactionsBottomSheetDialogFragment extends BottomSheetDialogFragment {
-    private ViewPager2 viewPager;
     private PageIndicatorView pageIndicatorView;
 
     @Nullable
@@ -34,11 +32,17 @@ public class AddTransactionsBottomSheetDialogFragment extends BottomSheetDialogF
         super.onViewCreated(view, savedInstanceState);
 
         // 初始化 ViewPager2 和 PageIndicatorView
-        viewPager = view.findViewById(R.id.viewPager);
+        ViewPager2 viewPager = view.findViewById(R.id.viewPager);
+        ViewPager2 operationSpaceViewPager = view.findViewById(R.id.operationSpaceViewPager);
+
         pageIndicatorView = view.findViewById(R.id.pageIndicatorView);
 
         // 设置 Adapter
-        viewPager.setAdapter(new PagerAdapter(this));
+        viewPager.setAdapter(new PagerAdapter(this, 2, "upper"));
+        operationSpaceViewPager.setAdapter(new PagerAdapter(this, 3, "lower"));
+
+        operationSpaceViewPager.setCurrentItem(1);
+        operationSpaceViewPager.setUserInputEnabled(false);
 
         // 设置 PageIndicatorView 的总页数
         pageIndicatorView.setCount(2);
@@ -55,22 +59,42 @@ public class AddTransactionsBottomSheetDialogFragment extends BottomSheetDialogF
     }
 
     // 嵌套 Fragment 需要使用的 Adapter
-    private class PagerAdapter extends FragmentStateAdapter {
-        public PagerAdapter(@NonNull Fragment fragment) {
+    private static class PagerAdapter extends FragmentStateAdapter {
+        private final int pageCount;
+        private final String id;
+
+        public PagerAdapter(@NonNull Fragment fragment, int pageCount, String id) {
             super(fragment); // 使用 Fragment 的 childFragmentManager
+            this.pageCount = pageCount;
+            this.id = id;
         }
 
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            return position == 0 ?
-                    new TransactionsPage1Fragment() : // 第一页
-                    new TransactionsPage2Fragment();  // 第二页
+            switch (id) {
+                case "upper":
+                    return position == 0 ? new TransactionsPage1Fragment() : new TransactionsPage2Fragment();
+                case "lower":
+                    switch (position) {
+                        case 0:
+                            return new OperationSpacePage1Fragment();
+                        case 1:
+                            return new OperationSpacePage2Fragment();
+                        case 2:
+                            return new OperationSpacePage3Fragment();
+                        default:
+                            throw new IllegalArgumentException("Invalid position: " + position);
+                    }
+                default:
+                    throw new IllegalArgumentException("Invalid id: " + id);
+            }
         }
+
 
         @Override
         public int getItemCount() {
-            return 2; // 总页数
+            return pageCount; // 总页数
         }
     }
 }

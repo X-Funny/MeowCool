@@ -17,9 +17,9 @@ import java.util.List;
 import top.xfunny.meowcool.R;
 import top.xfunny.meowcool.core.subject.SubjectNode;
 
-public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHolder>{
-    private List<SubjectNode> visibleNodes;
+public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHolder> {
     private final Context context;
+    private List<SubjectNode> visibleNodes;
 
     public SubjectAdapter(Context context) {
         this.context = context;
@@ -37,8 +37,8 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
      * 此方法用于遍历树形结构的节点，并将它们展平为一个列表，同时记录每个节点所在的层级
      * 主要用于在用户界面中以列表形式展示树形结构的数据，便于用户浏览
      *
-     * @param nodes    树形结构的节点列表，代表待展平的节点
-     * @param level    当前节点所在的层级，根节点层级为0，每向下一层递增1
+     * @param nodes 树形结构的节点列表，代表待展平的节点
+     * @param level 当前节点所在的层级，根节点层级为0，每向下一层递增1
      */
     private void flattenTree(List<SubjectNode> nodes, int level) {
         for (SubjectNode node : nodes) {

@@ -27,19 +27,6 @@ public class SubjectNode {
         this.path = path;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-
     /**
      * 构建科目树结构
      * 该方法从数据库中读取科目信息，并将其构建成一个树形结构，以便于展示科目之间的层级关系
@@ -109,6 +96,18 @@ public class SubjectNode {
             }
         }
         return subjects;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     @NonNull
