@@ -18,14 +18,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="科目管理" />
 
-    <!-- 科目树形列表 -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSubjects"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
     <!-- 右下角悬浮添加按钮 -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

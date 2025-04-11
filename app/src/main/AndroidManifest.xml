@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".Application"
@@ -14,6 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meku">
+        <activity
+            android:name=".page.subject_management_page.SubjectDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".page.subject_management_page.SubjectManagementPageActivity"
             android:exported="false" />
@@ -29,7 +33,8 @@
             android:theme="@style/Theme.Meku" />
         <activity
             android:name=".page.initial_page.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

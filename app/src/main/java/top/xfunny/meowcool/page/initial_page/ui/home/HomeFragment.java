@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void fab() {
+
         ExtendedFloatingActionButton fab = binding.fabAdd;
         fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(

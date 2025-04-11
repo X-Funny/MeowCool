@@ -1,6 +1,9 @@
 package top.xfunny.meowcool.page.subject_management_page;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,21 +12,43 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.w3c.dom.Text;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import top.xfunny.meowcool.R;
-import top.xfunny.meowcool.core.subject.SubjectNode;
+import top.xfunny.meowcool.core.DatabaseManager;
+import top.xfunny.meowcool.core.TransactionManager;
+import top.xfunny.meowcool.core.data.SubjectNode;
+import top.xfunny.meowcool.page.initial_page.ui.home.BottomSheetDialog.TransactionsViewModel;
 
 public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHolder> {
     private final Context context;
-    private List<SubjectNode> visibleNodes;
+    private final List<SubjectNode> visibleNodes;
+    private final SubjectAdapterMode mode;
+    private TransactionsViewModel transactionsViewModel;
+    private SubjectDetailViewModel detailViewModel;
 
-    public SubjectAdapter(Context context) {
+
+    public SubjectAdapter(Context context, SubjectAdapterMode mode, SubjectDetailViewModel detailViewModel) {// 编辑模式
         this.context = context;
         this.visibleNodes = new ArrayList<>();
+        this.mode = mode;
+        this.detailViewModel = detailViewModel;
+
+    }
+
+    public SubjectAdapter(Context context, SubjectAdapterMode mode, TransactionsViewModel transactionsViewModel) {
+        this.context = context;
+        this.visibleNodes = new ArrayList<>();
+        this.mode = mode;
+        this.transactionsViewModel = transactionsViewModel;
     }
 
     public void setData(List<SubjectNode> rootNodes) {
@@ -53,6 +78,21 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
         }
     }
 
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        Space spaceIndent;
+        ImageView ivExpand;
+        TextView tvSubjectName;
+        TextView tvSubject_amount;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            spaceIndent = itemView.findViewById(R.id.spaceIndent);
+            ivExpand = itemView.findViewById(R.id.ivExpand);
+            tvSubjectName = itemView.findViewById(R.id.tvSubjectName);
+            tvSubject_amount = itemView.findViewById(R.id.tvSubject_amount);
+        }
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -61,8 +101,11 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        TransactionManager transactionManager = new TransactionManager(DatabaseManager.openDatabase(context));
         // 获取当前位置的科目节点
         SubjectNode node = visibleNodes.get(position);
 
@@ -74,7 +117,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
         holder.tvSubjectName.setText(node.name);
 
         // 处理展开/折叠图标
-        if (!node.children.isEmpty()) {
+        if (!node.children.isEmpty()) {// 如果该科目有子节点
             holder.ivExpand.setVisibility(View.VISIBLE);
             // 根据展开状态设置不同图标
             if (node.isExpanded) {
@@ -102,9 +145,50 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                 // 更新当前项的箭头图标
                 notifyItemChanged(currentPosition);
             });
+
+            // 当有子节点时：禁用条目点击，启用展开图标点击
+            if (mode == SubjectAdapterMode.MODE_SELECT) {
+                holder.itemView.setClickable(false);
+                holder.itemView.setBackgroundResource(0); // 移除点击背景
+            } else {
+                holder.itemView.setClickable(true);
+                holder.itemView.setOnClickListener(v -> {
+                    // 这里添加条目点击后的业务逻辑(科目管理界面)
+                    SubjectNode currentNode = visibleNodes.get(position);
+                    Log.d("SubjectAdapter", "Item clicked: " + currentNode.name);
+                });
+            }
+
+            holder.ivExpand.setClickable(true);
         } else {
+            BigDecimal balance = new BigDecimal(0);
+            if(node.getDirection()==1){
+                balance = balance.add(transactionManager.getTransactionDebit(node.getUuid())).subtract(transactionManager.getTransactionCredit(node.getUuid()));
+            }else if(node.getDirection()==-1){
+                balance = balance.subtract(transactionManager.getTransactionDebit(node.getUuid())).add(transactionManager.getTransactionCredit(node.getUuid()));
+            }
+
+            holder.tvSubject_amount.setText("¥ "+balance.toString());
+
             // 如果没有子节点，隐藏展开/折叠图标
             holder.ivExpand.setVisibility(View.GONE);
+
+            holder.itemView.setClickable(true);
+
+            // 设置条目点击监听
+            holder.itemView.setOnClickListener(v -> {
+                // 这里添加条目点击后的业务逻辑（科目管理界面、科目选择界面）
+                SubjectNode currentNode = visibleNodes.get(position);
+                Log.d("SubjectAdapter", "Item clicked: " + currentNode.name);
+                if (mode == SubjectAdapterMode.MODE_SELECT) {
+                    // 传入所选中的subject node
+                    transactionsViewModel.selectSubject(node);
+                }else{
+                    detailViewModel.setSubjectNode(node);
+                    Intent intent = new Intent(context, SubjectDetailActivity.class);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 
@@ -135,18 +219,5 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
     @Override
     public int getItemCount() {
         return visibleNodes.size();
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        Space spaceIndent;
-        ImageView ivExpand;
-        TextView tvSubjectName;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            spaceIndent = itemView.findViewById(R.id.spaceIndent);
-            ivExpand = itemView.findViewById(R.id.ivExpand);
-            tvSubjectName = itemView.findViewById(R.id.tvSubjectName);
-        }
     }
 }

@@ -8,6 +8,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
 
+    private SubjectManager subjectManager;
+
     public DatabaseHelper(Context context, String name) {
         super(context, name, null, DATABASE_VERSION);
     }
@@ -22,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "CREATE TABLE IF NOT EXISTS accounting_subjects (" +
                         "uuid TEXT PRIMARY KEY, " +           //存储 UUID
                         "name TEXT NOT NULL, " +
-                        "balance_direction INTEGER NOT NULL, " + // 余额方向，0为借，1为贷
+                        "balance_direction INTEGER NOT NULL, " + // 余额方向, 1 表示借方，-1 表示贷方
                         "parent_uuid TEXT, " +                // 父节点 UUID
                         "path TEXT, " +                       // 路径
                         "FOREIGN KEY (parent_uuid) REFERENCES accounting_subjects(uuid) ON DELETE CASCADE" +
@@ -49,15 +51,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createVouchersTable =
                 "CREATE TABLE IF NOT EXISTS accounting_vouchers (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT, " + // 添加自增主键
-                        "date TEXT NOT NULL, " +
-                        "number TEXT NOT NULL, " +
+                        "date INTEGER NOT NULL, " +
+                        "number INTEGER NOT NULL, " +
                         "summary TEXT NOT NULL, " +
-                        "is_credit INTEGER NOT NULL, " +       // 改用 INTEGER 表示布尔
+                        "is_debit INTEGER NOT NULL, " +       // 改用 INTEGER 表示布尔
                         "subject_uuid TEXT NOT NULL, " +       // 关联科目 UUID
-                        "amount REAL NOT NULL, " +
+                        "amount NUMERIC NOT NULL, " +
                         "FOREIGN KEY (subject_uuid) REFERENCES accounting_subjects(uuid)" +
                         ")";
         db.execSQL(createVouchersTable);
+
+        initSubject(db);
+    }
+
+    public void initSubject(SQLiteDatabase db) {
+        SubjectManager subjectManager = new SubjectManager(db);
+        subjectManager.insertSubject("ASSET", "资产", 0, null, "/");
+        subjectManager.insertSubject("LIABILITY", "负债", 0, null, "/");
+        subjectManager.insertSubject("EQUITY", "净资产", 0, null, "/");
+        subjectManager.insertSubject("PROFIT_LOSS", "损益", 0, null, "/");
     }
 
     @Override

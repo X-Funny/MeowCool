@@ -4,4 +4,5 @@
     <item name="descriptionEditText" type="id" />
     <item name="transactionsListView" type="id" />
     <item name="button1" type="id" />
+    <item name="item_uuid" type="id" />
 </resources>

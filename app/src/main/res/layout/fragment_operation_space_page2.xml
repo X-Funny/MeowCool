@@ -1,251 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".page.initial_page.ui.home.BottomSheetDialog.OperationSpacePage2Fragment">
+    android:layout_height="match_parent">
 
-    <!-- 按钮容器 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <SearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:background="?attr/colorSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_7_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="?attr/selectableItemBackground"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.25">
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchView" />
 
-            <TextView
-                android:id="@+id/btn_7"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="7"
-                app:layout_constraintStart_toStartOf="@id/btn_7_container"
-                app:layout_constraintTop_toTopOf="@id/btn_7_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_8_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/btn_7_container"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_8"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="8"
-                app:layout_constraintStart_toStartOf="@id/btn_8_container"
-                app:layout_constraintTop_toTopOf="@id/btn_8_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_9_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/btn_8_container"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_9"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="9"
-                app:layout_constraintStart_toStartOf="@id/btn_9_container"
-                app:layout_constraintTop_toTopOf="@id/btn_9_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_backspace_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/btn_9_container"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.25">
-
-            <FrameLayout
-                android:id="@+id/btn_backspace"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/backspace_24px" />
-            </FrameLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_4_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_7_container"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_4"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="4"
-                app:layout_constraintStart_toStartOf="@id/btn_4_container"
-                app:layout_constraintTop_toTopOf="@id/btn_4_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_5_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/btn_4_container"
-            app:layout_constraintTop_toBottomOf="@id/btn_7_container"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_5"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="5"
-                app:layout_constraintStart_toStartOf="@id/btn_5_container"
-                app:layout_constraintTop_toTopOf="@id/btn_5_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_6_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/btn_5_container"
-            app:layout_constraintTop_toBottomOf="@id/btn_7_container"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_6"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="6"
-                app:layout_constraintStart_toStartOf="@id/btn_6_container"
-                app:layout_constraintTop_toTopOf="@id/btn_6_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout1" />
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_1_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_4_container"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_1"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="1"
-                app:layout_constraintStart_toStartOf="@id/btn_1_container"
-                app:layout_constraintTop_toTopOf="@id/btn_1_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_2_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/btn_1_container"
-            app:layout_constraintTop_toBottomOf="@id/btn_5_container"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_2"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="2"
-                app:layout_constraintStart_toStartOf="@id/btn_2_container"
-                app:layout_constraintTop_toTopOf="@id/btn_2_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_3_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/btn_2_container"
-            app:layout_constraintTop_toBottomOf="@id/btn_6_container"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_3"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="3"
-                app:layout_constraintStart_toStartOf="@id/btn_3_container"
-                app:layout_constraintTop_toTopOf="@id/btn_3_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_0_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="@id/btn_backspace_container"
-            app:layout_constraintTop_toBottomOf="@id/btn_7_container"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_0"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="0"
-                app:layout_constraintStart_toStartOf="@id/btn_0_container"
-                app:layout_constraintTop_toTopOf="@id/btn_0_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/btn_dot_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toEndOf="@id/btn_3_container"
-            app:layout_constraintTop_toBottomOf="@id/btn_0_container"
-            app:layout_constraintWidth_percent="0.25">
-
-            <TextView
-                android:id="@+id/btn_dot"
-                style="@style/CalcButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="."
-                app:layout_constraintStart_toStartOf="@id/btn_dot_container"
-                app:layout_constraintTop_toTopOf="@id/btn_dot_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

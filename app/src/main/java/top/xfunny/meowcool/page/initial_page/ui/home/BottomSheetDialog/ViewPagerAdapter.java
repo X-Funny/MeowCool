@@ -20,7 +20,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         if (position == 0) {
             return new AddTransactionsBottomSheetDialogFragment(); // 第一页显示计算器
-        } //todo
+        }
         return null;
     }
 

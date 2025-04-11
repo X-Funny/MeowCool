@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
     android:paddingVertical="8dp"
     android:paddingStart="16dp">
@@ -17,6 +18,8 @@
         android:id="@+id/ivExpand"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_gravity="center_vertical"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/expand_content_24px"
         android:visibility="gone" />
 
@@ -25,14 +28,25 @@
         android:id="@+id/tvSubjectName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.5"
+        android:text="科目"
+        android:textAppearance="?attr/textAppearanceBodyLarge"/>
+
+    <TextView
+        android:id="@+id/tvSubject_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:textSize="16sp" />
+        android:textAppearance="?attr/textAppearanceTitleMedium"/>
 
     <!-- 操作菜单 -->
     <ImageButton
         android:id="@+id/btnMenu"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
         android:background="?selectableItemBackgroundBorderless"
         android:src="@drawable/more_vert_24px" />
 </LinearLayout>

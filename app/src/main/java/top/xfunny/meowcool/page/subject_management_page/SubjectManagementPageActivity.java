@@ -24,35 +24,40 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import top.xfunny.meowcool.Application;
 import top.xfunny.meowcool.R;
 import top.xfunny.meowcool.core.DatabaseManager;
 import top.xfunny.meowcool.core.SubjectManager;
-import top.xfunny.meowcool.core.subject.SubjectNode;
+import top.xfunny.meowcool.core.data.SubjectNode;
 
 public class SubjectManagementPageActivity extends AppCompatActivity {
     private SubjectManager subjectManager;
     private SQLiteDatabase db;
-    private SubjectAdapter adapter;
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
 
-    /**
-     * 主题管理页面的创建方法
-     * 该方法在活动初始化时调用，用于设置活动的布局、初始化数据库和视图组件
-     *
-     * @param savedInstanceState 保存的实例状态，如果活动被重新创建（如屏幕旋转），则可用于恢复之前的状态
-     */
+    private SubjectManagementViewModel viewModel;
+
+    private SubjectDetailViewModel detailViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(SubjectManagementViewModel.class);
+        detailViewModel = new ViewModelProvider((ViewModelStoreOwner) getApplication()).get(SubjectDetailViewModel.class);
         EdgeToEdge.enable(this); // 启用边缘到边缘的布局支持，以适应不同设备的屏幕边缘
         setContentView(R.layout.activity_subject_management_page); // 设置活动的布局资源文件
 
@@ -64,22 +69,22 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
         });
 
         toolbar(); // 初始化工具栏
+        fab();// 初始化FAB
 
         db = DatabaseManager.openDatabase(this); // 打开数据库
         subjectManager = new SubjectManager(db); // 创建 SubjectManager 实例，用于管理主题
 
-        RecyclerView recyclerView = findViewById(R.id.rvSubjects); // 获取 RecyclerView 实例
-        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // 设置 RecyclerView 的布局管理器为LinearLayoutManager
-        adapter = new SubjectAdapter(this); // 创建 SubjectAdapter 实例
-        recyclerView.setAdapter(adapter); // 设置 RecyclerView 的适配器
+        // 设置ViewPager
+        viewPager = findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.tabLayout);
 
-        loadData(); // 加载数据到 RecyclerView 中
-        testBtn(); // 初始化测试按钮
-    }
+        CategoryPagerAdapter pagerAdapter = new CategoryPagerAdapter(this, SubjectAdapterMode.MODE_EDIT);
+        viewPager.setAdapter(pagerAdapter);
 
-    private void loadData() {
-        List<SubjectNode> rootNodes = SubjectNode.buildSubjectTree(db);
-        adapter.setData(rootNodes);
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            String[] titles = {"资产", "负债", "净资产", "损益"};
+            tab.setText(titles[position]);
+        }).attach();
     }
 
     private void toolbar() {
@@ -90,58 +95,6 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
-    private void testBtn() {//科目添加测试按钮，即将删除
-        Button btnTest = findViewById(R.id.fabAdd);
-        btnTest.setOnClickListener(v -> showAddSubjectDialog());
-    }
-
-    private void insertTestData() {//科目添加测试，即将删除
-        // 定义测试科目UUID（确保唯一性）
-        String rootUuid = "test_root_" + System.currentTimeMillis();
-        String level1Uuid = "test_level1_" + System.currentTimeMillis();
-        String level2Uuid = "test_level2_" + System.currentTimeMillis();
-
-        // 使用事务确保原子性
-        db.beginTransaction();
-        try {
-            // 插入一级科目（资产）
-            subjectManager.insertSubject(
-                    rootUuid,
-                    "测试-资产",
-                    1, // balanceDirection
-                    null, // parentUuid
-                    "/" + rootUuid + "/"
-            );
-
-            // 插入二级科目（流动资产）
-            subjectManager.insertSubject(
-                    level1Uuid,
-                    "测试-流动资产",
-                    1,
-                    rootUuid,
-                    "/" + rootUuid + "/" + level1Uuid + "/"
-            );
-
-            // 插入三级科目（现金）
-            subjectManager.insertSubject(
-                    level2Uuid,
-                    "测试-现金",
-                    1,
-                    level1Uuid,
-                    "/" + rootUuid + "/" + level1Uuid + "/" + level2Uuid + "/"
-            );
-
-            db.setTransactionSuccessful();
-            Toast.makeText(this, "测试数据插入成功", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Log.e("TestData", "插入失败", e);
-            Toast.makeText(this, "插入失败：" + e.getMessage(), Toast.LENGTH_SHORT).show();
-        } finally {
-            db.endTransaction();
-            loadData(); // 刷新数据
-        }
-    }
-
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_subject_management, menu);
@@ -149,6 +102,14 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
         MenuItem search = menu.findItem(R.id.action_location_search);
         MenuItem filter = menu.findItem(R.id.action_filter);
         return false;
+    }
+
+    private void fab() {
+        Button fab = findViewById(R.id.fabAdd);
+        fab.setOnClickListener(v -> {
+            showAddSubjectDialog();
+        });
+
     }
 
     private void showAddSubjectDialog() {
@@ -177,6 +138,7 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
 
             insertNewSubject(subjectName, direction, selectedParent);
             dialog.dismiss();
+            viewModel.refreshAll();
         });
 
         builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
@@ -231,23 +193,12 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
             subjectManager.insertSubject(uuid, name, direction, parentUuid, path);
             db.setTransactionSuccessful();
             Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
-            loadData();
+            //todo:需要新的刷新方式
         } catch (Exception e) {
             Log.e("AddSubject", "插入失败", e);
             Toast.makeText(this, "添加失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         } finally {
             db.endTransaction();
         }
-    }
-
-    // 更新菜单项点击处理
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_add) {
-            //showAddSubjectDialog();
-            insertTestData();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
