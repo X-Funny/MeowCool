@@ -1,5 +1,6 @@
 package top.xfunny.meowcool.page.subject_management_page;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,17 +18,23 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.List;
+
 import top.xfunny.meowcool.R;
+import top.xfunny.meowcool.core.DatabaseManager;
+import top.xfunny.meowcool.core.SubjectManager;
 import top.xfunny.meowcool.core.data.SubjectNode;
 
 public class SubjectDetailActivity extends AppCompatActivity {
     private TextInputEditText editText;
     private TextInputLayout editTextLayout;
-    private TextView initialAmountTextView = findViewById(R.id.subject_initial_account_amount);
+    private TextView initialAmountTextView;
     private MaterialButtonToggleGroup toggleGroup;
     private SubjectDetailViewModel detailViewModel;
-
     private SubjectNode subjectNode;
+    private SubjectManager subjectManager;
+    private SQLiteDatabase db;
+    private List<SubjectNode> usedChildren;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +47,12 @@ public class SubjectDetailActivity extends AppCompatActivity {
             return insets;
         });
 
-        subjectNode = detailViewModel.getSubjectNode();
+        db = DatabaseManager.openDatabase(this);
+        subjectManager = new SubjectManager(db);
 
+        subjectNode = (SubjectNode) getIntent().getSerializableExtra("node");
 
-        //detailViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(SubjectDetailViewModel.class);
-
+        checkUsed();
     }
 
     private void editText(){
@@ -80,4 +88,29 @@ public class SubjectDetailActivity extends AppCompatActivity {
         toggleGroup = findViewById(R.id.setBalanceDirection);
     }
 
+    private boolean isEditable(){
+        String parentUuid;
+        if(subjectNode!=null){
+           parentUuid = subjectManager.getParentSubjectUuid(subjectNode.getUuid());
+           if(parentUuid.equals("ASSET")||parentUuid.equals("LIABILITY")||parentUuid.equals("EQUITY")||parentUuid.equals("PROFIT_LOSS")){
+               return true;// 如果是一级科目，可直接编辑
+           }else{
+               return false;
+           }
+        }else {
+            return false;
+        }
+    }
+
+    public void checkUsed(){
+        usedChildren = subjectManager.findUsedDirectChildren(subjectNode.getUuid());
+        if (usedChildren.isEmpty()) {
+            System.out.println("该科目及其子科目未被占用");
+        } else {
+            System.out.println("被占用的直接子科目：");
+            for (SubjectNode node : usedChildren) {
+                System.out.println(" - " + node.name + " (UUID: " + node.uuid + ")");
+            }
+        }
+    }
 }

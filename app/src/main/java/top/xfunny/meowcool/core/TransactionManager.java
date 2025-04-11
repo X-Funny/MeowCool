@@ -3,7 +3,6 @@ package top.xfunny.meowcool.core;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.format.DateUtils;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,22 +20,21 @@ public class TransactionManager {
         this.db = db;
     }
 
-    public long addNewTransaction(long date, int number, String summary, int isCredit, String subjectUuid, BigDecimal amount) {
+    public void addNewTransaction(long date, int number, String summary, int isDebit, String subjectUuid, BigDecimal amount) {
         System.out.println("摘要"+summary);
         db.beginTransaction();
         ContentValues values = new ContentValues();
         values.put("date", date);
         values.put("number", number);
         values.put("summary", summary);
-        values.put("is_credit", isCredit);
+        values.put("is_debit", isDebit);
         values.put("subject_uuid", subjectUuid);
         values.put("amount", String.valueOf(amount));
 
         try{
             long result = db.insert("accounting_vouchers", null,values);
-            if (result == -1) return -1; // 插入失败
+            if (result == -1) return; // 插入失败
             db.setTransactionSuccessful();
-            return result;
         }finally {
             db.endTransaction();
         }
@@ -124,7 +122,7 @@ public class TransactionManager {
 
     public BigDecimal getTransactionCredit(String subjectUuid) {
         BigDecimal credit = new BigDecimal(0);
-        String query = "SELECT amount FROM accounting_vouchers WHERE subject_uuid = ? AND is_credit = 1";
+        String query = "SELECT amount FROM accounting_vouchers WHERE subject_uuid = ? AND is_debit = -1";
         Cursor cursor = db.rawQuery(query, new String[]{subjectUuid});
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -138,7 +136,7 @@ public class TransactionManager {
 
     public BigDecimal getTransactionDebit(String subjectUuid) {
         BigDecimal debit = new BigDecimal(0);
-        String query = "SELECT amount FROM accounting_vouchers WHERE subject_uuid = ? AND is_credit = -1";
+        String query = "SELECT amount FROM accounting_vouchers WHERE subject_uuid = ? AND is_debit = 1";
         Cursor cursor = db.rawQuery(query, new String[]{subjectUuid});
         if (cursor != null) {
             while (cursor.moveToNext()) {

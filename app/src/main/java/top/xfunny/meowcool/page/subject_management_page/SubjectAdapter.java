@@ -3,6 +3,7 @@ package top.xfunny.meowcool.page.subject_management_page;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,7 +156,9 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                 holder.itemView.setOnClickListener(v -> {
                     // 这里添加条目点击后的业务逻辑(科目管理界面)
                     SubjectNode currentNode = visibleNodes.get(position);
-                    Log.d("SubjectAdapter", "Item clicked: " + currentNode.name);
+                    Intent intent = new Intent(context, SubjectDetailActivity.class);
+                    intent.putExtra("node", currentNode);
+                    context.startActivity(intent);
                 });
             }
 
@@ -185,6 +188,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                     transactionsViewModel.selectSubject(node);
                 }else{
                     Intent intent = new Intent(context, SubjectDetailActivity.class);
+                    intent.putExtra("node", currentNode);
                     context.startActivity(intent);
                 }
             });

@@ -3,14 +3,16 @@ package top.xfunny.meowcool.core.data;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SubjectNode {
+public class SubjectNode implements Serializable {
     public String uuid;
     public String name;
     public String parentUuid;
@@ -21,22 +23,18 @@ public class SubjectNode {
     public String path;
     public int direction;
 
+    public boolean isUsed;
+
     public SubjectNode(String uuid, String name, String parentUuid, String path,int direction) {
         this.uuid = uuid;
         this.name = name;
         this.parentUuid = parentUuid;
         this.path = path;
         this.direction = direction;
+        this.isUsed = false;
     }
 
-    /**
-     * 构建科目树结构
-     * 该方法从数据库中读取科目信息，并将其构建成一个树形结构，以便于展示科目之间的层级关系
-     *
-     * @param db SQLiteDatabase对象，用于执行SQL查询
-     * @return 返回根科目节点列表，每个根节点都是一个树的起点
-     */
-    public static List<SubjectNode> buildSubjectTree(SQLiteDatabase db, String categoryId) {
+    public static List<SubjectNode> buildSubjectTree(SQLiteDatabase db, String uid) {
         // 存储所有节点的列表
         List<SubjectNode> allNodes = new ArrayList<>();
         // 通过UUID映射节点，便于快速查找
@@ -55,7 +53,7 @@ public class SubjectNode {
 
 
         // 扫描并添加树状节点
-        try (Cursor cursor = db.rawQuery(sql, new String[]{categoryId})) {
+        try (Cursor cursor = db.rawQuery(sql, new String[]{uid})) {
             while (cursor.moveToNext()) {
                 String uuid = cursor.getString(0);
                 String name = cursor.getString(1);
@@ -75,7 +73,7 @@ public class SubjectNode {
         List<SubjectNode> rootNodes = new ArrayList<>();
         for (SubjectNode node : allNodes) {
             // 如果节点没有父节点，则将其作为根节点
-            if (node.parentUuid == null || node.parentUuid.equals(categoryId)) {
+            if (node.parentUuid == null || node.parentUuid.equals(uid)) {
                 rootNodes.add(node);
             } else {
                 // 如果节点有父节点，尝试将其添加到父节点的子节点列表中
@@ -107,6 +105,7 @@ public class SubjectNode {
         }
         return subjects;
     }
+
 
     public String getName() {
         return name;

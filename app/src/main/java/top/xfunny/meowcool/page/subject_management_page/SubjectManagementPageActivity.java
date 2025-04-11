@@ -48,10 +48,9 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
-
     private SubjectManagementViewModel viewModel;
 
-    private SubjectDetailViewModel detailViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
