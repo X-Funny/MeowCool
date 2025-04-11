@@ -26,7 +26,6 @@ public class CategoryFragment extends Fragment {
     private static final String ARG_CATEGORY = "category";
     public TransactionsViewModel transactionsViewModel;
 
-    public SubjectDetailViewModel subjectDetailViewModel;
     private SubjectAdapter adapter;
     private SubjectManagementViewModel viewModel;
     private Fragment parentFragment;
@@ -47,20 +46,16 @@ public class CategoryFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(SubjectManagementViewModel.class);
 
 
-        transactionsViewModel = Objects.equals(requireArguments().getSerializable("mode", SubjectAdapterMode.class), SubjectAdapterMode.MODE_SELECT)?
+        transactionsViewModel = Objects.equals(requireArguments().getSerializable("mode"), SubjectAdapterMode.MODE_SELECT)?
                 new ViewModelProvider(parentFragment).get(TransactionsViewModel.class) :
                 null;
-
-        subjectDetailViewModel = Objects.equals(requireArguments().getSerializable("mode", SubjectAdapterMode.class), SubjectAdapterMode.MODE_SELECT)?
-                null:
-                new ViewModelProvider(parentFragment).get(SubjectDetailViewModel.class);
 
         RecyclerView recyclerView = view.findViewById(R.id.subject_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = Objects.equals(requireArguments().getSerializable("mode", SubjectAdapterMode.class), SubjectAdapterMode.MODE_SELECT) ?
-                new SubjectAdapter(requireContext(), requireArguments().getSerializable("mode", SubjectAdapterMode.class), transactionsViewModel) :
-                new SubjectAdapter(requireContext(), requireArguments().getSerializable("mode", SubjectAdapterMode.class), subjectDetailViewModel);
+        adapter = Objects.equals(requireArguments().getSerializable("mode"), SubjectAdapterMode.MODE_SELECT) ?
+                new SubjectAdapter(requireContext(), (SubjectAdapterMode) requireArguments().getSerializable("mode"), transactionsViewModel) :
+                new SubjectAdapter(requireContext(),  (SubjectAdapterMode)requireArguments().getSerializable("mode"));
 
         recyclerView.setAdapter(adapter);
 

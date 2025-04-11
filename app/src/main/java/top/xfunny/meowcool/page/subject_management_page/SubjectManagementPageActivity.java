@@ -57,7 +57,7 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(SubjectManagementViewModel.class);
-        detailViewModel = new ViewModelProvider((ViewModelStoreOwner) getApplication()).get(SubjectDetailViewModel.class);
+
         EdgeToEdge.enable(this); // 启用边缘到边缘的布局支持，以适应不同设备的屏幕边缘
         setContentView(R.layout.activity_subject_management_page); // 设置活动的布局资源文件
 

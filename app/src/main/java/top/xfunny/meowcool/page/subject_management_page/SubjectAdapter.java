@@ -33,14 +33,14 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
     private final List<SubjectNode> visibleNodes;
     private final SubjectAdapterMode mode;
     private TransactionsViewModel transactionsViewModel;
-    private SubjectDetailViewModel detailViewModel;
 
 
-    public SubjectAdapter(Context context, SubjectAdapterMode mode, SubjectDetailViewModel detailViewModel) {// 编辑模式
+
+    public SubjectAdapter(Context context, SubjectAdapterMode mode) {// 编辑模式
         this.context = context;
         this.visibleNodes = new ArrayList<>();
         this.mode = mode;
-        this.detailViewModel = detailViewModel;
+
 
     }
 
@@ -184,7 +184,6 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                     // 传入所选中的subject node
                     transactionsViewModel.selectSubject(node);
                 }else{
-                    detailViewModel.setSubjectNode(node);
                     Intent intent = new Intent(context, SubjectDetailActivity.class);
                     context.startActivity(intent);
                 }

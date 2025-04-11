@@ -43,7 +43,7 @@ public class SubjectDetailActivity extends AppCompatActivity {
         subjectNode = detailViewModel.getSubjectNode();
 
 
-        detailViewModel = new ViewModelProvider((ViewModelStoreOwner) getApplication()).get(SubjectDetailViewModel.class);
+        //detailViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(SubjectDetailViewModel.class);
 
     }
 
@@ -80,7 +80,4 @@ public class SubjectDetailActivity extends AppCompatActivity {
         toggleGroup = findViewById(R.id.setBalanceDirection);
     }
 
-    private boolean allowSaving(){
-
-    }
 }

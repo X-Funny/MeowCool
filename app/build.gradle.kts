@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "top.xfunny.meowcool"
-        minSdk = 33
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
