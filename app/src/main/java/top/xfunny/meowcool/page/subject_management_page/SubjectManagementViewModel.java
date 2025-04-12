@@ -7,6 +7,7 @@ public class SubjectManagementViewModel extends ViewModel {
     private final MutableLiveData<Boolean> needAssetRefresh = new MutableLiveData<>();
     private final MutableLiveData<Boolean> needLiabilityRefresh = new MutableLiveData<>();
     private final MutableLiveData<Boolean> needEquityRefresh = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> needCostRefresh = new MutableLiveData<>();
     private final MutableLiveData<Boolean> needProfitLossRefresh = new MutableLiveData<>();
 
 
@@ -34,6 +35,14 @@ public class SubjectManagementViewModel extends ViewModel {
         this.needEquityRefresh.setValue(needEquityRefresh);
     }
 
+    public MutableLiveData<Boolean> getNeedCostRefresh() {
+        return needCostRefresh;
+    }
+
+    public void setNeedCostRefresh(boolean needCostRefresh) {
+        this.needCostRefresh.setValue(needCostRefresh);
+    }
+
     public MutableLiveData<Boolean> getNeedProfitLossRefresh() {
         return needProfitLossRefresh;
     }
@@ -46,6 +55,7 @@ public class SubjectManagementViewModel extends ViewModel {
         setNeedAssetRefresh(true);
         setNeedLiabilityRefresh(true);
         setNeedEquityRefresh(true);
+        setNeedCostRefresh(true);
         setNeedProfitLossRefresh(true);
     }
 

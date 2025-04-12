@@ -26,7 +26,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "name TEXT NOT NULL, " +
                         "balance_direction INTEGER NOT NULL, " + // 余额方向, 1 表示借方，-1 表示贷方
                         "parent_uuid TEXT, " +                // 父节点 UUID
-                        "path TEXT, " +                       // 路径
+                        "path TEXT, " +// 路径
+                        "initial_amount NUMERIC, " +
                         "FOREIGN KEY (parent_uuid) REFERENCES accounting_subjects(uuid) ON DELETE CASCADE" +
                         ")";
         db.execSQL(createAccountingSubjectsTable);
@@ -69,6 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         subjectManager.insertSubject("ASSET", "资产", 0, null, "/");
         subjectManager.insertSubject("LIABILITY", "负债", 0, null, "/");
         subjectManager.insertSubject("EQUITY", "净资产", 0, null, "/");
+        subjectManager.insertSubject("COST", "成本", 0, null, "/");
         subjectManager.insertSubject("PROFIT_LOSS", "损益", 0, null, "/");
     }
 

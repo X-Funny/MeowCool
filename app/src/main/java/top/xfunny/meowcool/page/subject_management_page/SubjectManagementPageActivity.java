@@ -1,5 +1,6 @@
 package top.xfunny.meowcool.page.subject_management_page;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,6 +31,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -81,9 +83,20 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            String[] titles = {"资产", "负债", "净资产", "损益"};
+            String[] titles = {"资产", "负债", "净资产", "成本", "损益"};
             tab.setText(titles[position]);
         }).attach();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            viewModel.refreshAll();
+            Snackbar.make(findViewById(R.id.main), "删除成功", Snackbar.LENGTH_LONG).show();
+        } else if (requestCode == 1001 && resultCode == 6) {
+            viewModel.refreshAll();
+        }
     }
 
     private void toolbar() {

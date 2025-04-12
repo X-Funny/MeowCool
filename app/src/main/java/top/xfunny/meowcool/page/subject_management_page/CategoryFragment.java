@@ -25,7 +25,6 @@ import top.xfunny.meowcool.page.initial_page.ui.home.BottomSheetDialog.Transacti
 public class CategoryFragment extends Fragment {
     private static final String ARG_CATEGORY = "category";
     public TransactionsViewModel transactionsViewModel;
-
     private SubjectAdapter adapter;
     private SubjectManagementViewModel viewModel;
     private Fragment parentFragment;
@@ -98,6 +97,14 @@ public class CategoryFragment extends Fragment {
                 viewModel.getNeedEquityRefresh().observe(getViewLifecycleOwner(), refresh -> {
                     if (refresh) {
                         viewModel.setNeedEquityRefresh(false);
+                        loadData();
+                    }
+                });
+                break;
+            case "COST":
+                viewModel.getNeedCostRefresh().observe(getViewLifecycleOwner(), refresh -> {
+                    if (refresh) {
+                        viewModel.setNeedCostRefresh(false);
                         loadData();
                     }
                 });

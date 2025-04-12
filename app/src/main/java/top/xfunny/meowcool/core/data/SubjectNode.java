@@ -4,9 +4,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 
+
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,10 +24,10 @@ public class SubjectNode implements Serializable {
 
     public String path;
     public int direction;
-
     public boolean isUsed;
+    public BigDecimal initialAmount = new BigDecimal(0);
 
-    public SubjectNode(String uuid, String name, String parentUuid, String path,int direction) {
+    public SubjectNode(String uuid, String name, String parentUuid, String path, int direction) {
         this.uuid = uuid;
         this.name = name;
         this.parentUuid = parentUuid;
@@ -87,6 +89,53 @@ public class SubjectNode implements Serializable {
         return rootNodes;
     }
 
+    public static List<SubjectNode> buildSubjectTree2(SQLiteDatabase db, String targetUuid) {
+        List<SubjectNode> allNodes = new ArrayList<>();
+        Map<String, SubjectNode> nodeMap = new HashMap<>();
+
+        // 查询目标科目及其所有后代（包含自身）
+        String sql = "SELECT s.uuid, s.name, s.parent_uuid, s.path, s.balance_direction, s.initial_amount  "
+                + "FROM accounting_subjects s "
+                + "WHERE s.uuid IN ("
+                + "    SELECT descendant_uuid "
+                + "    FROM accounting_subject_closure "
+                + "    WHERE ancestor_uuid = ?"
+                + ")";
+
+        try (Cursor cursor = db.rawQuery(sql, new String[]{targetUuid})) {
+            while (cursor.moveToNext()) {
+                String uuid = cursor.getString(0);
+                String name = cursor.getString(1);
+                String parentUuid = cursor.isNull(2) ? null : cursor.getString(2);
+                String path = cursor.getString(3);
+                int direction = cursor.getInt(4);
+                BigDecimal initialAmount = new BigDecimal(
+                        cursor.isNull(5) ? "0" : cursor.getString(5)
+                );
+                SubjectNode node = new SubjectNode(uuid, name, parentUuid, path, direction);
+                node.setInitialAmount(initialAmount);
+                allNodes.add(node);
+                nodeMap.put(uuid, node);
+            }
+        }
+
+        // 构建树结构（明确以 targetUuid 为根）
+        List<SubjectNode> rootNodes = new ArrayList<>();
+        SubjectNode targetRoot = nodeMap.get(targetUuid);
+        if (targetRoot != null) {
+            rootNodes.add(targetRoot);
+            for (SubjectNode node : allNodes) {
+                if (node.parentUuid != null && !node.uuid.equals(targetUuid)) {
+                    SubjectNode parent = nodeMap.get(node.parentUuid);
+                    if (parent != null) {
+                        parent.children.add(node);
+                    }
+                }
+            }
+        }
+        return rootNodes;
+    }
+
     public static List<SubjectNode> getAllSubjects(SQLiteDatabase db) {
         List<SubjectNode> subjects = new ArrayList<>();
 
@@ -119,8 +168,14 @@ public class SubjectNode implements Serializable {
         return path;
     }
 
-    public int getDirection() {
-        return direction;
+    public int getDirection() {return direction;}
+
+    public BigDecimal getInitialAmount() {
+        return initialAmount;
+    }
+
+    public void setInitialAmount(BigDecimal initialAmount) {
+        this.initialAmount = initialAmount;
     }
 
     @NonNull

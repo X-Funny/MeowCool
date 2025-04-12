@@ -13,6 +13,7 @@ import android.widget.Space;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
@@ -154,11 +155,10 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
             } else {
                 holder.itemView.setClickable(true);
                 holder.itemView.setOnClickListener(v -> {
-                    // 这里添加条目点击后的业务逻辑(科目管理界面)
                     SubjectNode currentNode = visibleNodes.get(position);
                     Intent intent = new Intent(context, SubjectDetailActivity.class);
                     intent.putExtra("node", currentNode);
-                    context.startActivity(intent);
+                    ((AppCompatActivity) context).startActivityForResult(intent, 1001);
                 });
             }
 

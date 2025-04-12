@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 
 public class CategoryPagerAdapter extends FragmentStateAdapter {
-    private final String[] categories = {"ASSET", "LIABILITY", "EQUITY", "PROFIT_LOSS"};
+    private final String[] categories = {"ASSET", "LIABILITY", "EQUITY", "COST", "PROFIT_LOSS"};
     private final SubjectAdapterMode mode;
     private final Fragment parentFragment;
 

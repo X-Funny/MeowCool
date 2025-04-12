@@ -63,31 +63,55 @@ public class TransactionsViewModel extends ViewModel {
         EntryItem currentItem = Objects.requireNonNull(itemList.getValue()).get(Objects.requireNonNull(selectedPosition.getValue()).position);
         String current = currentItem.getAmount() != null ? currentItem.getAmount() : "";
 
-        // 如果当前值是 "0.00"，则清空
+        // 预处理初始状态
         if (current.equals("0.00")) {
-            current = "";
+            current = current.isEmpty() ? "" : "0"; // 统一处理为数字模式
         }
 
-        // 添加输入验证逻辑
         if (number.equals(".")) {
-            if (!current.contains(".")) {
+            // 处理小数点逻辑
+            if (current.isEmpty()) {
+                current = "0.";
+            } else if (!current.contains(".")) {
+                // 在数字后添加小数点
                 current += ".";
             }
         } else if (number.equals("del")) {
-            // 删除最后一个字符
+            // 处理删除逻辑
             if (!current.isEmpty()) {
                 current = current.substring(0, current.length() - 1);
             }
-        } else {
-            // 检查是否已经包含小数点
-            int dotIndex = current.indexOf(".");
-            if (dotIndex != -1) {
-                // 如果小数点后已经有两位数字，则不允许再输入数字
-                if (current.length() - dotIndex - 1 >= 2) {
-                    return; // 忽略输入
-                }
+            // 删除后处理默认值
+            if (current.isEmpty() || current.equals("0")) {
+                current = "0.00";
             }
-            current += number;
+        } else {
+            // 处理数字输入
+            if (current.equals("0.00") || current.equals("0")) {
+                current = number; // 替换初始零值
+            } else {
+                int dotIndex = current.indexOf(".");
+                if (dotIndex == -1) {
+                    // 整数部分最多10位
+                    if (current.length() >= 10) return;
+                } else {
+                    // 小数部分最多两位
+                    if (current.substring(dotIndex + 1).length() >= 2) return;
+                }
+                current += number;
+            }
+        }
+
+        // 后处理特殊情况
+        if (current.endsWith(".")) {
+            // 显示优化：末尾小数点保留
+        } else if (!current.contains(".") && !current.equals("0.00")) {
+            // 添加默认小数位（可选）
+        }
+
+        // 空值保护
+        if (current.isEmpty()) {
+            current = "0.00";
         }
 
         // 强制触发LiveData更新

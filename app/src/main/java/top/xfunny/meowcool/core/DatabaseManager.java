@@ -130,14 +130,16 @@ public class DatabaseManager {
         isDatabaseExist(context);
         String ILLEGAL_CHARACTERS = "\\/:*?\"<>|";
         for (String name : databaseFiles) {
-            if (name.equals(databaseName)) {//存在相同文件
+            if (name.equals(databaseName)) {// 存在相同文件
                 return 1;
             }
         }
-        if (databaseName.equals(".db")) {//空文件名
+
+        if (databaseName.equals(".db")) {// 空文件名
             return 2;
         }
-        for (char c : ILLEGAL_CHARACTERS.toCharArray()) {//含有非法字符
+
+        for (char c : ILLEGAL_CHARACTERS.toCharArray()) {// 含有非法字符
             if (databaseName.indexOf(c) != -1) {
                 return 3;
             }

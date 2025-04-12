@@ -87,9 +87,7 @@ public class AccountDetailActivity extends AppCompatActivity {
         MenuItem saveMenuItem = menu.findItem(R.id.action_save);
         Drawable icon = saveMenuItem.getIcon();
         if (icon != null) {
-            // 包装为可变 Drawable，方便设置颜色
             icon = DrawableCompat.wrap(icon);
-            // 获取主题颜色
             saveMenuItem.setIcon(icon);
         }
         saveMenuItem.setVisible(false);
