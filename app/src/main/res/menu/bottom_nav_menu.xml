@@ -12,11 +12,6 @@
         android:title="@string/title_detail" />
 
     <item
-        android:id="@+id/navigation_chart"
-        android:icon="@drawable/rounded_add_chart_24"
-        android:title="@string/title_chart" />
-
-    <item
         android:id="@+id/navigation_more"
         android:icon="@drawable/more_horiz_24px"
         android:title="@string/title_more" />

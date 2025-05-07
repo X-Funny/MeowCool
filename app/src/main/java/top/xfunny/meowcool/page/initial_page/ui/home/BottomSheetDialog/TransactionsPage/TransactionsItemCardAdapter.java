@@ -69,12 +69,12 @@ public class TransactionsItemCardAdapter extends RecyclerView.Adapter<Transactio
 
     }
 
-    public void subjectDirection(EntryViewHolder holder, int position){
+    public void subjectDirection(EntryViewHolder holder, int position) {
         final int adapterPosition = position;
         final EntryItem item = viewModel.getItemList().getValue().get(adapterPosition);
         if (adapterPosition == RecyclerView.NO_POSITION) return;
         // 初始化方向选择状态
-        switch (item.getDirectionLiveData().getValue()){
+        switch (item.getDirectionLiveData().getValue()) {
             case -1:
                 holder.toggleGroup.check(R.id.credit_button);
                 break;
@@ -114,7 +114,7 @@ public class TransactionsItemCardAdapter extends RecyclerView.Adapter<Transactio
         // 设置当前LiveData到Tag
         holder.subjectTextView.setTag(item.getSubjectLiveData());
 
-        if(item.getSubjectLiveData().getValue()!=null){
+        if (item.getSubjectLiveData().getValue() != null) {
             holder.subjectTextView.setText(item.getSubjectLiveData().getValue().toString());
         }
 
@@ -123,7 +123,7 @@ public class TransactionsItemCardAdapter extends RecyclerView.Adapter<Transactio
         item.getSubjectLiveData().observe(
                 fragment.getViewLifecycleOwner(),
                 subject -> {
-                    if (item.getUuid().equals(holder.subjectTextView.getTag(R.id.item_uuid))&&subject!=null) {
+                    if (item.getUuid().equals(holder.subjectTextView.getTag(R.id.item_uuid)) && subject != null) {
                         holder.subjectTextView.setText(subject.toString());
                     }
                 }
@@ -156,14 +156,14 @@ public class TransactionsItemCardAdapter extends RecyclerView.Adapter<Transactio
         holder.amountTextView.setTag(item.getAmountLiveData());
 
         // 初始化显示
-        holder.amountTextView.setText("¥"+item.getAmount());
+        holder.amountTextView.setText("¥" + item.getAmount());
 
         // 绑定观察者到ViewHolder自身生命周期
         item.getAmountLiveData().observe(
                 fragment.getViewLifecycleOwner(),
                 amount -> {
                     if (item.getUuid().equals(holder.amountTextView.getTag(R.id.item_uuid))) {
-                        holder.amountTextView.setText("¥"+amount);
+                        holder.amountTextView.setText("¥" + amount);
                     }
                 }
         );

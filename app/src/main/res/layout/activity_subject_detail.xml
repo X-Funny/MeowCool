@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -24,9 +23,9 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/subject_detail_toolbar"
         android:layout_margin="16dp"
-        android:hint="科目名称">
+        android:hint="科目名称"
+        app:layout_constraintTop_toBottomOf="@id/subject_detail_toolbar">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/subject_name_edit_text"
@@ -40,46 +39,46 @@
         android:id="@+id/text_subject_initial_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="初始金额"
         android:layout_margin="16dp"
-        app:layout_constraintTop_toBottomOf="@id/subject_name_input_layout"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:text="初始金额"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subject_name_input_layout" />
 
     <TextView
         android:id="@+id/subject_initial_account_amount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/rounded_textview_selector"
         android:padding="8dp"
         android:text="¥ 0.00"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
         android:textAppearance="?attr/textAppearanceHeadlineMedium"
-        app:layout_constraintTop_toBottomOf="@id/text_subject_initial_account"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/text_subject_initial_account" />
 
 
     <TextView
         android:id="@+id/text_subject_direction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="借贷方向"
         android:layout_margin="16dp"
-        app:layout_constraintTop_toBottomOf="@id/subject_initial_account_amount"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:text="借贷方向"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subject_initial_account_amount" />
 
 
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/setDetailBalanceDirection"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:selectionRequired="true"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        app:singleSelection="true"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_subject_direction"
-        app:layout_constraintStart_toStartOf="parent">
+        app:selectionRequired="true"
+        app:singleSelection="true">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/debit_button"
@@ -102,32 +101,30 @@
         android:id="@+id/warning_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/setDetailBalanceDirection"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setDetailBalanceDirection">
 
         <ImageView
             android:id="@+id/warning_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/warning_24px"
             android:layout_marginStart="16dp"
+            android:src="@drawable/warning_24px"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
             android:id="@+id/warning_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginHorizontal="16dp"
-            app:layout_constraintStart_toEndOf="@id/warning_icon"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/warning_icon">
-        </LinearLayout>
+            app:layout_constraintStart_toEndOf="@id/warning_icon"
+            app:layout_constraintTop_toTopOf="@id/warning_icon"></LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -67,4 +67,6 @@ dependencies {
     implementation(libs.androidx.cardview)
 
     implementation(libs.romandanylyk.pageindicatorview)
+    implementation(libs.okhttp)
+
 }

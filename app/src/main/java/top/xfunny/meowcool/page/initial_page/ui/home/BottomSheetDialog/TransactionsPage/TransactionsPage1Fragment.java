@@ -66,7 +66,7 @@ public class TransactionsPage1Fragment extends Fragment {
         editText = view.findViewById(R.id.text_input_summary);
         transactionNumber = view.findViewById(R.id.transaction_number);
 
-        transactionNumber.setText("记-"+(transactionManager.getLastRowColumnValue()+1));
+        transactionNumber.setText("记-" + (transactionManager.getLastRowColumnValue() + 1));
 
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setRemoveDuration(250); // 默认是120ms，可根据需求设置

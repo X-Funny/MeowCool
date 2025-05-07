@@ -1,16 +1,21 @@
 package top.xfunny.meowcool.core;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import top.xfunny.meowcool.core.data.SettingsManager;
 import top.xfunny.meowcool.core.data.TransactionItem;
 
 public class TransactionManager {
@@ -20,8 +25,18 @@ public class TransactionManager {
         this.db = db;
     }
 
+    public static boolean isSameDate(long timestamp1, long timestamp2) {
+        LocalDate date1 = Instant.ofEpochMilli(timestamp1)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        LocalDate date2 = Instant.ofEpochMilli(timestamp2)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        return date1.equals(date2);
+    }
+
     public void addNewTransaction(long date, int number, String summary, int isDebit, String subjectUuid, BigDecimal amount) {
-        System.out.println("摘要"+summary);
+        System.out.println("摘要" + summary);
         db.beginTransaction();
         ContentValues values = new ContentValues();
         values.put("date", date);
@@ -31,11 +46,11 @@ public class TransactionManager {
         values.put("subject_uuid", subjectUuid);
         values.put("amount", String.valueOf(amount));
 
-        try{
-            long result = db.insert("accounting_vouchers", null,values);
+        try {
+            long result = db.insert("accounting_vouchers", null, values);
             if (result == -1) return; // 插入失败
             db.setTransactionSuccessful();
-        }finally {
+        } finally {
             db.endTransaction();
         }
     }
@@ -62,9 +77,9 @@ public class TransactionManager {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 long date = cursor.getLong(0);
-                if(dateList.isEmpty()){
+                if (dateList.isEmpty()) {
                     dateList.add(date);
-                }else if(!isSameDate(date,dateList.get(dateList.size()-1))){
+                } else if (!isSameDate(date, dateList.get(dateList.size() - 1))) {
                     dateList.add(date);
                 }
             }
@@ -76,7 +91,7 @@ public class TransactionManager {
     public List<TransactionItem> getTransactionList(long date) {
         List<TransactionItem> transactionList = new ArrayList<>();
         String query = "SELECT * FROM accounting_vouchers";
-        Cursor cursor = db.rawQuery(query,null);
+        Cursor cursor = db.rawQuery(query, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -87,7 +102,7 @@ public class TransactionManager {
                 String subjectUuid = cursor.getString(5);
                 BigDecimal amount = new BigDecimal(cursor.getString(6));
 
-                if(isSameDate(transactionDate,date)){
+                if (isSameDate(transactionDate, date)) {
                     // 检查 transactionList 是否为空
                     if (transactionList.isEmpty()) {
                         TransactionItem transactionItem = new TransactionItem();
@@ -98,7 +113,7 @@ public class TransactionManager {
                         transactionList.add(transactionItem);
                     } else {
                         // 获取最后一个 TransactionItem
-                        TransactionItem lastItem = transactionList.get(transactionList.size()-1);
+                        TransactionItem lastItem = transactionList.get(transactionList.size() - 1);
                         if (number != lastItem.getNumber()) {
                             // 如果 number 不同，创建新的 TransactionItem
                             TransactionItem transactionItem = new TransactionItem();
@@ -147,16 +162,64 @@ public class TransactionManager {
         return debit;
     }
 
-
-    public static boolean isSameDate(long timestamp1, long timestamp2) {
-        LocalDate date1 = Instant.ofEpochMilli(timestamp1)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-        LocalDate date2 = Instant.ofEpochMilli(timestamp2)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-        return date1.equals(date2);
+    public BigDecimal getAccumulatedPaymentOrRevenue(Context context, int type) {
+        SettingsManager settingsManager = new SettingsManager(context);
+        BigDecimal accumulatedPayment = new BigDecimal(0);
+        List<String> prSubjectUuidList = settingsManager.getPRSubject();
+        for(String subjectUuid : prSubjectUuidList){
+            String query = "SELECT amount FROM accounting_vouchers WHERE subject_uuid = ? AND is_debit = ?";
+            Cursor cursor = db.rawQuery(query, new String[]{subjectUuid, String.valueOf(type)});
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    BigDecimal amount = new BigDecimal(cursor.getString(0));
+                    accumulatedPayment = accumulatedPayment.add(amount);
+                }
+                cursor.close();
+            }
+        }
+        return accumulatedPayment;
     }
 
+    public String getAllTransactionPrompt() {
+        SubjectManager subjectManager = new SubjectManager(db);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日", Locale.getDefault());
 
+        String startPrompt = "你是一名专业的个人高级财务顾问，以下是用户的交易记录，编号相同的记录为同一分录，请你根据这些交易记录进行详细的分析，并给出建议，同时为用户作出未来预算。注意，1.不要使用markdown语法，因为用户的界面不支持markdown 2.用中文回答。3.用户没有输入框，无法进一步向您发问。4.用户目前使用电子复式记账软件";
+        StringBuilder endPrompt = new StringBuilder();
+        List<String> prTransactionList = new ArrayList<>();
+
+        String number;
+        String summary;
+        String date;
+        String direction;
+        String SubjectName;
+        String amount;
+
+        String query = "SELECT * FROM accounting_vouchers";
+        Cursor cursor = db.rawQuery(query, null);
+        try {
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    date = sdf.format(new Date(cursor.getLong(1)));
+                    number = String.valueOf(cursor.getInt(2));
+                    summary = cursor.getString(3);
+                    direction = cursor.getInt(4) == 1 ? "借" : "贷";
+                    SubjectName = subjectManager.findSubjectByUuid(cursor.getString(5)).getName();
+                    amount = cursor.getString(6) + "元";
+
+                    String signalprompt = "记-" + number + "，" + date + "," + summary + "," + direction + " :" + SubjectName + "-" + amount + "。";
+                    prTransactionList.add(signalprompt);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close(); // 确保 Cursor 被关闭
+            }
+        }
+
+        for (String prompt : prTransactionList) {
+            endPrompt.append(prompt);
+        }
+        return startPrompt + endPrompt;
+    }
 }

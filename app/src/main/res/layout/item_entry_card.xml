@@ -8,8 +8,8 @@
     android:layout_marginTop="16dp"
     android:checkable="true"
     android:clickable="true"
-    android:focusable="true"
     android:elevation="2dp"
+    android:focusable="true"
     android:translationZ="2dp">
 
     <GridLayout

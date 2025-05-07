@@ -2,8 +2,7 @@ package top.xfunny.meowcool.utils;
 
 public class FormatMonth {
     public static String format(String time) {
-        switch (time)
-        {
+        switch (time) {
             case "01":
                 return "一月";
             case "02":

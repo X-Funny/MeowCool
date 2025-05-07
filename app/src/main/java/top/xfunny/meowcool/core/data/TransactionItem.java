@@ -10,34 +10,34 @@ public class TransactionItem {
     long time;
     String summary;
     int number;
-    List<Triple<String, Integer, BigDecimal>> transactionList ;
+    List<Triple<String, Integer, BigDecimal>> transactionList;
 
     public TransactionItem() {
         this.transactionList = new ArrayList<>();
-    }
-
-    public void setTime(long time) {
-        this.time = time;
     }
 
     public long getTime() {
         return time;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public String getSummary() {
         return summary;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public int getNumber() {
         return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public void addTransaction(String subjectUuid, int isCredit, BigDecimal amount) {
@@ -51,7 +51,7 @@ public class TransactionItem {
     public BigDecimal getTotalAmount() {
         BigDecimal totalAmount = new BigDecimal("0");
         for (Triple<String, Integer, BigDecimal> transaction : transactionList) {
-            if(transaction.getSecond() == 1){
+            if (transaction.getSecond() == 1) {
                 totalAmount = totalAmount.add(transaction.getThird());
             }
         }

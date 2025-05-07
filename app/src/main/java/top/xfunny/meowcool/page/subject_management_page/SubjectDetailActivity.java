@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +29,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,8 +66,6 @@ public class SubjectDetailActivity extends AppCompatActivity {
     private MutableLiveData<Boolean> needSave = new MutableLiveData<>();
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +96,7 @@ public class SubjectDetailActivity extends AppCompatActivity {
         warningLayout();
     }
 
-    private void editText(){
+    private void editText() {
         editText = findViewById(R.id.subject_name_edit_text);
         editTextLayout = findViewById(R.id.subject_name_input_layout);
 
@@ -123,7 +119,7 @@ public class SubjectDetailActivity extends AppCompatActivity {
                 String subjectName = s.toString();
                 int checkResult = subjectManager.nameCheck(subjectName);
 
-                switch (checkResult){
+                switch (checkResult) {
                     case 0:
                         editTextLayout.setError("");
                         saveSubjectName = subjectName;
@@ -149,15 +145,15 @@ public class SubjectDetailActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void initialAmountTextView(){
+    private void initialAmountTextView() {
         initialAmountTextView = findViewById(R.id.subject_initial_account_amount);
         initialAmountTextView.setEnabled(!hasChildren());
 
-        if(hasChildren()){
+        if (hasChildren()) {
             BigDecimal initialAmount = subjectManager.calculateParentInitialAmount(subjectNode.getUuid());
-            initialAmountTextView.setText("¥ "+initialAmount);
-        }else{
-            initialAmountTextView.setText("¥ "+subjectNode.getInitialAmount().toString());
+            initialAmountTextView.setText("¥ " + initialAmount);
+        } else {
+            initialAmountTextView.setText("¥ " + subjectNode.getInitialAmount().toString());
         }
 
         initialAmountTextView.setOnClickListener(v -> {
@@ -168,7 +164,7 @@ public class SubjectDetailActivity extends AppCompatActivity {
             detailViewModel.getCurrentAmount().observe(this, newAmount -> {
                 if (newAmount != null) {
                     // 使用DecimalFormat格式化显示
-                    initialAmountTextView.setText("¥ "+newAmount);
+                    initialAmountTextView.setText("¥ " + newAmount);
                     saveSubjectinitialAmount = new BigDecimal(newAmount);
                     saveInitialAmount = !saveSubjectinitialAmount.equals(subjectNode.getInitialAmount());
                     getNeedSave();
@@ -177,7 +173,7 @@ public class SubjectDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void toggleGroup(){
+    private void toggleGroup() {
         toggleGroup = findViewById(R.id.setDetailBalanceDirection);
         toggleGroup.setEnabled(isEdible);
 
@@ -185,11 +181,14 @@ public class SubjectDetailActivity extends AppCompatActivity {
 
         toggleGroup.check(direction == 1 ? R.id.debit_button : R.id.credit_button);
         toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if(isChecked){
-                if(checkedId == R.id.debit_button){
+            if (isChecked) {
+                if(subjectNode.children != null){
+                    Snackbar.make(findViewById(R.id.main), "子级科目的借贷方向将会更改", Snackbar.LENGTH_LONG).show();
+                }
+                if (checkedId == R.id.debit_button) {
                     saveDirection = true;
                     saveSubjectDirection = 1;
-                }else if (checkedId == R.id.credit_button){
+                } else if (checkedId == R.id.credit_button) {
                     saveDirection = true;
                     saveSubjectDirection = -1;
                 }
@@ -198,7 +197,7 @@ public class SubjectDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void toolbar(){
+    private void toolbar() {
         toolbar = findViewById(R.id.subject_detail_toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -222,9 +221,9 @@ public class SubjectDetailActivity extends AppCompatActivity {
             String subjectName;
             BigDecimal initialAmount;
             Integer direction;
-            subjectName = saveName? saveSubjectName : null;
-            initialAmount = saveInitialAmount? saveSubjectinitialAmount : null;
-            direction = saveDirection? saveSubjectDirection : null;
+            subjectName = saveName ? saveSubjectName : null;
+            initialAmount = saveInitialAmount ? saveSubjectinitialAmount : null;
+            direction = saveDirection ? saveSubjectDirection : null;
 
             subjectManager.modifySubject(subjectNode.getUuid(), subjectName, initialAmount, direction);
 
@@ -240,7 +239,7 @@ public class SubjectDetailActivity extends AppCompatActivity {
         return true;
     }
 
-    public void warningLayout(){
+    public void warningLayout() {
         String parentUuid = subjectManager.getParentSubjectUuid(subjectNode.getUuid());
         LinearLayout layout = findViewById(R.id.warning_info);
         TextView textView1 = new TextView(this);
@@ -248,21 +247,21 @@ public class SubjectDetailActivity extends AppCompatActivity {
         TextView textView3 = new TextView(this);
 
         warningLayout = findViewById(R.id.warning_layout);
-        warningLayout.setVisibility(isUsed()||!isEdible ? View.VISIBLE:View.GONE);// 当isUsed为false，则不可见
+        warningLayout.setVisibility(isUsed() || !isEdible ? View.VISIBLE : View.GONE);// 当isUsed为false，则不可见
 
         textView1.setText("非末级科目，无法编辑初始金额");
         textView2.setText("该科目或其子科目已被使用，该科目无法删除且无法更改借贷方向");
         textView3.setText("非父级科目，无法更改借贷方向");
 
-        if(hasChildren()){
+        if (hasChildren()) {
             layout.addView(textView1);
         }
 
-        if(isUsed){
+        if (isUsed) {
             layout.addView(textView2);
         }
 
-        if(!(parentUuid.equals("ASSET")||parentUuid.equals("LIABILITY")||parentUuid.equals("EQUITY")||parentUuid.equals("COST")||parentUuid.equals("PROFIT_LOSS"))){
+        if (!(parentUuid.equals("ASSET") || parentUuid.equals("LIABILITY") || parentUuid.equals("EQUITY") || parentUuid.equals("COST") || parentUuid.equals("PROFIT_LOSS"))) {
             layout.addView(textView3);
         }
 
@@ -281,12 +280,12 @@ public class SubjectDetailActivity extends AppCompatActivity {
             child.setLayoutParams(params);
         }
 
-        if(layout.getChildCount()==0){
+        if (layout.getChildCount() == 0) {
             warningLayout.setVisibility(View.GONE);
         }
     }
 
-    public void confirmDeleteDialog(){
+    public void confirmDeleteDialog() {
         String message = hasChildren()
                 ? "该科目下的所有子级科目将被删除"
                 : null;
@@ -306,22 +305,22 @@ public class SubjectDetailActivity extends AppCompatActivity {
                 .show();
     }
 
-    private boolean isEditable(){// 返回true，则可编辑
+    private boolean isEditable() {// 返回true，则可编辑
         String parentUuid;
-        if(subjectNode!=null){
+        if (subjectNode != null) {
             parentUuid = subjectManager.getParentSubjectUuid(subjectNode.getUuid());
-            if(parentUuid.equals("ASSET")||parentUuid.equals("LIABILITY")||parentUuid.equals("EQUITY")||parentUuid.equals("COST")||parentUuid.equals("PROFIT_LOSS")){//判断是否有父级科目
-                return !isUsed();//如果没父级科目，判断是否被使用
-            }else{
+            if (parentUuid.equals("ASSET") || parentUuid.equals("LIABILITY") || parentUuid.equals("EQUITY") || parentUuid.equals("COST") || parentUuid.equals("PROFIT_LOSS")) {//判断是否有父级科目
+                return !isUsed();// 如果没父级科目，判断是否被使用
+            } else {
                 return false;
             }
-        }else {
+        } else {
             return false;
         }
     }
 
-    public boolean isUsed(){
-        Pair<List<SubjectNode>,SubjectNode> result = subjectManager.findUsedDirectChildren(subjectNode.getUuid());
+    public boolean isUsed() {
+        Pair<List<SubjectNode>, SubjectNode> result = subjectManager.findUsedDirectChildren(subjectNode.getUuid());
 
         usedChildren = result.first;
         subjectNode = result.second;
@@ -337,19 +336,17 @@ public class SubjectDetailActivity extends AppCompatActivity {
         }
     }
 
-    public boolean hasChildren(){
+    public boolean hasChildren() {
         List<SubjectNode> children = SubjectNode.buildSubjectTree(db, subjectNode.getUuid());
         return !children.isEmpty();
     }
 
-    public MutableLiveData<Boolean> getNeedSave(){
-        if((saveDirection||saveInitialAmount|| saveName) && legitimateSubjectName){
+    public MutableLiveData<Boolean> getNeedSave() {
+        if ((saveDirection || saveInitialAmount || saveName) && legitimateSubjectName) {
             needSave.setValue(true);
-        }else{
+        } else {
             needSave.setValue(false);
         }
         return needSave;
     }
-
-
 }

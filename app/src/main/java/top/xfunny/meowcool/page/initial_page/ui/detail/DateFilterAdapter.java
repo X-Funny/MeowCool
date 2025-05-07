@@ -26,22 +26,10 @@ public class DateFilterAdapter extends RecyclerView.Adapter<DateFilterAdapter.Vi
     private SQLiteDatabase db;
 
 
-    public DateFilterAdapter(List<Long> dateList, Context context,SQLiteDatabase db) {
+    public DateFilterAdapter(List<Long> dateList, Context context, SQLiteDatabase db) {
         this.dateList = dateList;
         this.context = context;
         this.db = db;
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView dateMonthTextView;
-        TextView dateDayTextView;
-        RecyclerView transactionsRecyclerView;
-        public ViewHolder(View itemView) {
-            super(itemView);
-            dateMonthTextView = itemView.findViewById(R.id.date_month);
-            dateDayTextView = itemView.findViewById(R.id.date_day);
-            transactionsRecyclerView = itemView.findViewById(R.id.transaction_recyclerView);
-        }
     }
 
     @NonNull
@@ -68,5 +56,18 @@ public class DateFilterAdapter extends RecyclerView.Adapter<DateFilterAdapter.Vi
     @Override
     public int getItemCount() {
         return dateList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView dateMonthTextView;
+        TextView dateDayTextView;
+        RecyclerView transactionsRecyclerView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            dateMonthTextView = itemView.findViewById(R.id.date_month);
+            dateDayTextView = itemView.findViewById(R.id.date_day);
+            transactionsRecyclerView = itemView.findViewById(R.id.transaction_recyclerView);
+        }
     }
 }

@@ -1,35 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
-        android:id="@+id/action_add"
-        android:icon="@drawable/rounded_add_24"
+        android:id="@+id/action_configuate_pr_subject"
+        android:icon="@drawable/baseline_settings_24"
         android:orderInCategory="100"
-        android:title="添加"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_location_search"
-        android:icon="@drawable/round_location_searching_24"
-        android:orderInCategory="100"
-        android:title="定位"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_filter"
-        android:icon="@drawable/round_filter_alt_24"
-        android:orderInCategory="100"
-        android:title="过滤"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_select_all"
-        android:icon="@drawable/select_all_24px"
-        android:orderInCategory="100"
-        android:title="全选"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_deselect_all"
-        android:icon="@drawable/rounded_deselect_24"
-        android:orderInCategory="100"
-        android:title="全不选"
+        android:title="收付款科目设置"
         app:showAsAction="ifRoom" />
 </menu>

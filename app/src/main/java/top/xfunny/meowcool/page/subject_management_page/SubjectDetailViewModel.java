@@ -1,19 +1,10 @@
 package top.xfunny.meowcool.page.subject_management_page;
 
 import android.app.Application;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import top.xfunny.meowcool.core.data.EntryItem;
 
 
 public class SubjectDetailViewModel extends AndroidViewModel {

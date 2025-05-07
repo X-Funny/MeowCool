@@ -12,13 +12,13 @@ public class CategoryPagerAdapter extends FragmentStateAdapter {
     private final Fragment parentFragment;
 
 
-    public CategoryPagerAdapter(@NonNull  Fragment fragment, SubjectAdapterMode mode) {
+    public CategoryPagerAdapter(@NonNull Fragment fragment, SubjectAdapterMode mode) {
         super(fragment);
         this.mode = mode;
         this.parentFragment = fragment;
     }
 
-    public CategoryPagerAdapter(@NonNull  FragmentActivity fa, SubjectAdapterMode mode) {
+    public CategoryPagerAdapter(@NonNull FragmentActivity fa, SubjectAdapterMode mode) {
         super(fa);
         this.mode = mode;
         this.parentFragment = null;

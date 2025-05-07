@@ -40,6 +40,7 @@ public class DatabaseManager {
         sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
         File databasesFolder = context.getDatabasePath("databases").getParentFile();
         String selectedDatabase = sharedPref.getString("selectedDatabase", "");
+
         boolean shouldCloseDatabase = false;
 
         // 检查是否要关闭数据库
@@ -109,16 +110,21 @@ public class DatabaseManager {
 
     public static SQLiteDatabase openDatabase(Context context) {//打开账套,用于编辑
         String DatabaseName = getSelectedDatabaseName(context);
-        return SQLiteDatabase.openDatabase(
-                context.getDatabasePath(DatabaseName).getPath(),
-                null,
-                SQLiteDatabase.OPEN_READWRITE
-        );
+        if(!DatabaseName.isEmpty()){
+            return SQLiteDatabase.openDatabase(
+                    context.getDatabasePath(DatabaseName).getPath(),
+                    null,
+                    SQLiteDatabase.OPEN_READWRITE
+            );
+        }else{
+            return null;
+        }
     }
 
     public static void close(Context context) {//与账套断开连接
         sharedPref = context.getSharedPreferences("MyPreferences", MODE_PRIVATE);
         sharedPref.edit().putString("selectedDatabase", null).apply();
+        sharedPref.edit().putString("PRSubject", null).apply();
     }
 
     public static String getSelectedDatabaseName(Context context) {//读取目前正在操作的账套名称

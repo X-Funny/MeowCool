@@ -19,11 +19,10 @@
             android:id="@+id/transaction_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textAppearance="?attr/textAppearanceHeadlineSmall"
             android:text="记-1"
-            />
+            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- 摘要输入框 -->
         <com.google.android.material.textfield.TextInputLayout
@@ -49,22 +48,22 @@
 
         <FrameLayout
             android:id="@+id/overlay_container"
-            android:background="@drawable/rounded_delete_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_delete_view"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/inputSummary"
             app:layout_constraintEnd_toEndOf="@id/inputSummary"
             app:layout_constraintStart_toStartOf="@id/inputSummary"
-            app:layout_constraintTop_toTopOf="@id/inputSummary"
-            app:layout_constraintBottom_toBottomOf="@id/inputSummary"
-            android:visibility="gone"
-            >
+            app:layout_constraintTop_toTopOf="@id/inputSummary">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
                 android:text="松开删除"
-                android:textColor="?attr/colorError"/>
+                android:textColor="?attr/colorError" />
         </FrameLayout>
 
         <!-- RecyclerView -->

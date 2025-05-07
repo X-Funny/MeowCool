@@ -3,12 +3,10 @@ package top.xfunny.meowcool.core;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import android.util.Pair;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +63,7 @@ public class SubjectManager {
         String sql = "SELECT parent_uuid FROM accounting_subjects WHERE uuid = ?";
         String[] args = {uuid};
         String parentUuid = null;
-        try (android.database.Cursor cursor = db.rawQuery(sql, args)) {
+        try (Cursor cursor = db.rawQuery(sql, args)) {
             if (cursor.moveToFirst()) {
                 parentUuid = cursor.getString(0);
             }
@@ -74,7 +72,7 @@ public class SubjectManager {
     }
 
 
-    public Pair<List<SubjectNode>,SubjectNode> findUsedDirectChildren(String targetUuid) {
+    public Pair<List<SubjectNode>, SubjectNode> findUsedDirectChildren(String targetUuid) {
         // 1. 获取目标科目及其所有后代UUID
         List<String> descendantUuids = getDescendantUuids(targetUuid);
         descendantUuids.add(targetUuid); // 包含自身
@@ -84,7 +82,7 @@ public class SubjectManager {
 
         // 3. 构建科目树
         List<SubjectNode> tree = SubjectNode.buildSubjectTree2(db, targetUuid);
-        if (tree.isEmpty()) return new Pair<>(new ArrayList<>() , null);
+        if (tree.isEmpty()) return new Pair<>(new ArrayList<>(), null);
         List<SubjectNode> usedChildren = new ArrayList<>();
         SubjectNode targetNode = tree.get(0);
         // 4. 后序遍历标记占用状态
@@ -97,7 +95,7 @@ public class SubjectManager {
                 usedChildren.add(child);
             }
         }
-        return new Pair<>(usedChildren,targetNode);
+        return new Pair<>(usedChildren, targetNode);
     }
 
     // 后序遍历核心逻辑
@@ -143,20 +141,52 @@ public class SubjectManager {
     }
 
     public void modifySubject(String uuid, String name, BigDecimal initialAmount, Integer balanceDirection) {
-        ContentValues values = new ContentValues();
-        if(name!=null){
-            values.put("name", name);
-        }
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
 
-        if(initialAmount!=null){
-            values.put("initial_amount", String.valueOf(initialAmount));
-        }
+            if (name != null) {
+                values.put("name", name);
+            }
+            if (initialAmount != null) {
+                values.put("initial_amount", String.valueOf(initialAmount));
+            }
 
-        if(balanceDirection!=null){
-            values.put("balance_direction", balanceDirection);
-        }
+            if (balanceDirection != null) {
+                values.put("balance_direction", balanceDirection);
 
-        db.update("accounting_subjects", values, "uuid = ?", new String[]{uuid});
+                // 1. 获取目标科目及其所有子科目UUID
+                List<String> allUuids = new ArrayList<>();
+                allUuids.add(uuid); // 添加自身
+
+                List<SubjectNode> tree = SubjectNode.buildSubjectTree2(db, uuid);
+                if (!tree.isEmpty()) {
+                    collectAllUuids(tree.get(0), allUuids);
+                }
+
+                // 2. 批量更新所有相关科目的余额方向
+                String placeholders = String.join(",", Collections.nCopies(allUuids.size(), "?"));
+                String sql = "UPDATE accounting_subjects " +
+                        "SET balance_direction = ? " +
+                        "WHERE uuid IN (" + placeholders + ")";
+
+                // 构建参数：第一个参数是新的 balanceDirection，后面是 UUID 列表
+                List<String> args = new ArrayList<>();
+                args.add(String.valueOf(balanceDirection));
+                args.addAll(allUuids);
+
+                db.execSQL(sql, args.toArray(new String[0]));
+            }
+
+            // 3. 更新当前科目其他字段（如果不需要递归更新时单独更新）
+            if (!values.isEmpty()) {
+                db.update("accounting_subjects", values, "uuid = ?", new String[]{uuid});
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public BigDecimal calculateParentInitialAmount(String targetUuid) {
@@ -172,6 +202,35 @@ public class SubjectManager {
 
         // 4. 返回根节点（目标科目）的汇总金额
         return root.getInitialAmount();
+    }
+
+    public SubjectNode findSubjectByUuid(String uuid) {
+        String name = null;
+        String parentUuid = null;
+        String path = null;
+        Integer direction = null;
+        BigDecimal initialAmount = new BigDecimal(0);
+
+        String sql = "SELECT * FROM accounting_subjects WHERE uuid = ?";
+        try (Cursor cursor = db.rawQuery(sql, new String[]{uuid})) {
+            if (cursor.moveToNext()) {
+                name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                parentUuid = cursor.getString(cursor.getColumnIndexOrThrow("parent_uuid"));
+                path = cursor.getString(cursor.getColumnIndexOrThrow("path"));
+                direction = cursor.getInt(cursor.getColumnIndexOrThrow("balance_direction"));
+
+                String amount = cursor.getString(cursor.getColumnIndexOrThrow("initial_amount"));
+                if(amount != null){
+                    initialAmount = new BigDecimal(amount);
+                }else{
+                    initialAmount = new BigDecimal(0);
+                }
+
+            }
+        }
+        SubjectNode node = new SubjectNode(uuid, name, parentUuid, path, direction, initialAmount);
+
+        return node;
     }
 
     public int nameCheck(String name) {

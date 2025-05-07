@@ -38,7 +38,7 @@ public class OperationSpacePage2Fragment extends Fragment {
         viewPager.setAdapter(pagerAdapter);
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            String[] titles = {"资产", "负债", "净资产", "成本","损益"};
+            String[] titles = {"资产", "负债", "净资产", "成本", "损益"};
             tab.setText(titles[position]);
         }).attach();
 

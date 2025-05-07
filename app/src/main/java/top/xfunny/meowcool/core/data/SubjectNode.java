@@ -3,8 +3,6 @@ package top.xfunny.meowcool.core.data;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-
-
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
@@ -23,17 +21,18 @@ public class SubjectNode implements Serializable {
     public boolean isExpanded;
 
     public String path;
-    public int direction;
+    public Integer direction;
     public boolean isUsed;
     public BigDecimal initialAmount = new BigDecimal(0);
 
-    public SubjectNode(String uuid, String name, String parentUuid, String path, int direction) {
+    public SubjectNode(String uuid, String name, String parentUuid, String path, Integer direction, BigDecimal initialAmount) {
         this.uuid = uuid;
         this.name = name;
         this.parentUuid = parentUuid;
         this.path = path;
         this.direction = direction;
         this.isUsed = false;
+        this.initialAmount = initialAmount;
     }
 
     public static List<SubjectNode> buildSubjectTree(SQLiteDatabase db, String uid) {
@@ -43,7 +42,7 @@ public class SubjectNode implements Serializable {
         Map<String, SubjectNode> nodeMap = new HashMap<>();
 
         // 查询科目及父节点信息
-        String sql = "SELECT s.uuid, s.name, c.ancestor_uuid as parent_uuid, s.path, s.balance_direction "
+        String sql = "SELECT s.uuid, s.name, c.ancestor_uuid as parent_uuid, s.path, s.balance_direction, s.initial_amount "
                 + "FROM accounting_subjects s "
                 + "LEFT JOIN accounting_subject_closure c "
                 + "    ON s.uuid = c.descendant_uuid AND c.depth = 1 "
@@ -63,9 +62,12 @@ public class SubjectNode implements Serializable {
                 String parentUuid = cursor.isNull(2) ? null : cursor.getString(2);
                 String path = cursor.getString(3);
                 int direction = cursor.getInt(4);
+                BigDecimal initialAmount = new BigDecimal(
+                        cursor.isNull(5) ? "0" : cursor.getString(5)
+                );
                 System.out.println("正在扫描，扫描结果：uuid:" + uuid + " name:" + name + " parentUuid:" + parentUuid);
                 // 创建节点并添加到节点列表和映射中
-                SubjectNode node = new SubjectNode(uuid, name, parentUuid, path, direction);
+                SubjectNode node = new SubjectNode(uuid, name, parentUuid, path, direction, initialAmount);
                 allNodes.add(node);
                 nodeMap.put(uuid, node);
             }
@@ -112,7 +114,7 @@ public class SubjectNode implements Serializable {
                 BigDecimal initialAmount = new BigDecimal(
                         cursor.isNull(5) ? "0" : cursor.getString(5)
                 );
-                SubjectNode node = new SubjectNode(uuid, name, parentUuid, path, direction);
+                SubjectNode node = new SubjectNode(uuid, name, parentUuid, path, direction, initialAmount);
                 node.setInitialAmount(initialAmount);
                 allNodes.add(node);
                 nodeMap.put(uuid, node);
@@ -140,7 +142,7 @@ public class SubjectNode implements Serializable {
         List<SubjectNode> subjects = new ArrayList<>();
 
         // 添加path字段查询
-        String sql = "SELECT uuid, name, parent_uuid, path , balance_direction FROM accounting_subjects";
+        String sql = "SELECT uuid, name, parent_uuid, path , balance_direction, initial_amount FROM accounting_subjects";
 
         try (Cursor cursor = db.rawQuery(sql, null)) {
             while (cursor.moveToNext()) {
@@ -149,7 +151,10 @@ public class SubjectNode implements Serializable {
                 String parentUuid = cursor.isNull(2) ? null : cursor.getString(2);
                 String path = cursor.getString(3);
                 int direction = cursor.getInt(4);
-                subjects.add(new SubjectNode(uuid, name, parentUuid, path, direction));
+                BigDecimal initialAmount = new BigDecimal(
+                        cursor.isNull(5) ? "0" : cursor.getString(5)
+                );
+                subjects.add(new SubjectNode(uuid, name, parentUuid, path, direction, initialAmount));
             }
         }
         return subjects;
@@ -168,7 +173,9 @@ public class SubjectNode implements Serializable {
         return path;
     }
 
-    public int getDirection() {return direction;}
+    public int getDirection() {
+        return direction;
+    }
 
     public BigDecimal getInitialAmount() {
         return initialAmount;

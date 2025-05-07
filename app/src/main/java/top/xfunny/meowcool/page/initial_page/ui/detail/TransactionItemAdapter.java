@@ -23,21 +23,6 @@ public class TransactionItemAdapter extends RecyclerView.Adapter<TransactionItem
         this.transactionItemList = transactionItemList;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView summaryTextView;
-        TextView amountTextView;
-        TextView dateTextView;
-        TextView numberTextView;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            summaryTextView = itemView.findViewById(R.id.card_summary);
-            amountTextView = itemView.findViewById(R.id.card_amount);
-            dateTextView = itemView.findViewById(R.id.card_date);
-            numberTextView = itemView.findViewById(R.id.card_transaction_number);
-        }
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -52,13 +37,28 @@ public class TransactionItemAdapter extends RecyclerView.Adapter<TransactionItem
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         TransactionItem transactionItem = transactionItemList.get(position);
         holder.summaryTextView.setText(transactionItem.getSummary());
-        holder.amountTextView.setText("¥ "+transactionItem.getTotalAmount().toString());
+        holder.amountTextView.setText("¥ " + transactionItem.getTotalAmount().toString());
         holder.dateTextView.setText(sdf.format(transactionItem.getTime()));
-        holder.numberTextView.setText("记-"+ transactionItem.getNumber());
+        holder.numberTextView.setText("记-" + transactionItem.getNumber());
     }
 
     @Override
     public int getItemCount() {
         return transactionItemList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView summaryTextView;
+        TextView amountTextView;
+        TextView dateTextView;
+        TextView numberTextView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            summaryTextView = itemView.findViewById(R.id.card_summary);
+            amountTextView = itemView.findViewById(R.id.card_amount);
+            dateTextView = itemView.findViewById(R.id.card_date);
+            numberTextView = itemView.findViewById(R.id.card_transaction_number);
+        }
     }
 }

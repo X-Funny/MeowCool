@@ -202,7 +202,7 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="14dp"
-                            android:src="@drawable/baseline_settings_24" />
+                            android:src="@drawable/robot_2_24px" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -214,13 +214,13 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="测试页面"
+                                android:text="DeepSeek配置"
                                 android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="即将移除"
+                                android:text="用于AI财务分析"
                                 android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
                         </LinearLayout>
 

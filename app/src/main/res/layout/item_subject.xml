@@ -31,7 +31,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1.5"
         android:text="科目"
-        android:textAppearance="?attr/textAppearanceBodyLarge"/>
+        android:textAppearance="?attr/textAppearanceBodyLarge" />
 
     <TextView
         android:id="@+id/tvSubject_amount"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:textAppearance="?attr/textAppearanceTitleMedium"/>
+        android:textAppearance="?attr/textAppearanceTitleMedium" />
 
     <!-- 操作菜单 -->
     <ImageButton

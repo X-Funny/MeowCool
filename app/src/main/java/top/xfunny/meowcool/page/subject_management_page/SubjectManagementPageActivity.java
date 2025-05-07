@@ -26,7 +26,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
@@ -39,7 +38,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import top.xfunny.meowcool.Application;
 import top.xfunny.meowcool.R;
 import top.xfunny.meowcool.core.DatabaseManager;
 import top.xfunny.meowcool.core.SubjectManager;
@@ -51,7 +49,6 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
     private SubjectManagementViewModel viewModel;
-
 
 
     @Override
@@ -91,6 +88,7 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == 1001 && resultCode == RESULT_OK) {
             viewModel.refreshAll();
             Snackbar.make(findViewById(R.id.main), "删除成功", Snackbar.LENGTH_LONG).show();
@@ -107,13 +105,17 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
-
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_subject_management, menu);
-        MenuItem add = menu.findItem(R.id.action_add);
-        MenuItem search = menu.findItem(R.id.action_location_search);
-        MenuItem filter = menu.findItem(R.id.action_filter);
-        return false;
+        MenuItem configuatePRSubject = menu.findItem(R.id.action_configuate_pr_subject);
+        configuatePRSubject.setOnMenuItemClickListener(item -> {
+            Intent intent = new Intent(this, PRConfiguationActivity.class);
+            startActivity(intent);
+            return true;
+        });
+
+        return true;
     }
 
     private void fab() {
@@ -121,7 +123,6 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
         fab.setOnClickListener(v -> {
             showAddSubjectDialog();
         });
-
     }
 
     private void showAddSubjectDialog() {
@@ -150,6 +151,7 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
 
             insertNewSubject(subjectName, direction, selectedParent);
             dialog.dismiss();
+
             viewModel.refreshAll();
         });
 
@@ -205,7 +207,6 @@ public class SubjectManagementPageActivity extends AppCompatActivity {
             subjectManager.insertSubject(uuid, name, direction, parentUuid, path);
             db.setTransactionSuccessful();
             Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
-            //todo:需要新的刷新方式
         } catch (Exception e) {
             Log.e("AddSubject", "插入失败", e);
             Toast.makeText(this, "添加失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();

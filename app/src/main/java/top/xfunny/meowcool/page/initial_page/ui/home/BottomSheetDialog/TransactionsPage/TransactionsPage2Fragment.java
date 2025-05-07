@@ -43,12 +43,12 @@ public class TransactionsPage2Fragment extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireParentFragment()).get(TransactionsViewModel.class);
         viewModel.getUpperPage().observe(getViewLifecycleOwner(), page -> {
-            if(page == 1){
-                trySaveTransactionItem(view,viewModel);
+            if (page == 1) {
+                trySaveTransactionItem(view, viewModel);
             }
         });
 
@@ -56,7 +56,7 @@ public class TransactionsPage2Fragment extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    private void  trySaveTransactionItem(View view, TransactionsViewModel viewModel){
+    private void trySaveTransactionItem(View view, TransactionsViewModel viewModel) {
         ImageView ivResult = view.findViewById(R.id.result_imageView);
         TextView tvResult = view.findViewById(R.id.result_textView);
         MaterialButton btnOperation = view.findViewById(R.id.operation_button);
@@ -67,21 +67,21 @@ public class TransactionsPage2Fragment extends Fragment {
 
         // 检查交易条目
         CheckResult result = checkTransactionItem(itemList);
-        if(!result.getStatus().equals(CheckingStatus.DONE)){
+        if (!result.getStatus().equals(CheckingStatus.DONE)) {
             ivResult.setImageResource(R.drawable.rounded_close_24);
             String errorMessage;
-            switch (result.getStatus()){
+            switch (result.getStatus()) {
                 case NULL_AMOUNT:
                     errorMessage = "金额不能为空";
-                    tvResult.setText("第"+result.getCheckingPosition()+1+"行遇到错误，原因是:"+errorMessage);
+                    tvResult.setText("第" + result.getCheckingPosition() + 1 + "行遇到错误，原因是:" + errorMessage);
                     break;
                 case NULL_SUBJECT:
                     errorMessage = "科目不能为空";
-                    tvResult.setText("第"+result.getCheckingPosition()+1+"行遇到错误，原因是:"+errorMessage);
+                    tvResult.setText("第" + result.getCheckingPosition() + 1 + "行遇到错误，原因是:" + errorMessage);
                     break;
                 case NULL_DIRECTION:
                     errorMessage = "借贷方向不能为空，必须选择「借」或「贷」";
-                    tvResult.setText("第"+result.getCheckingPosition()+1+"行遇到错误，原因是:"+errorMessage);
+                    tvResult.setText("第" + result.getCheckingPosition() + 1 + "行遇到错误，原因是:" + errorMessage);
                     break;
                 case NULL_TRANSACTION:
                     errorMessage = "交易条目不能为空";
@@ -93,7 +93,7 @@ public class TransactionsPage2Fragment extends Fragment {
                     break;
                 case UNBALANCED_ACCOUNTS:
                     errorMessage = "借贷不平";
-                    tvResult.setText("遇到错误，原因是:"+errorMessage);
+                    tvResult.setText("遇到错误，原因是:" + errorMessage);
                     break;
             }
             btnOperation.setText("返回修改");
@@ -101,7 +101,7 @@ public class TransactionsPage2Fragment extends Fragment {
             btnOperation.setOnClickListener(v -> {
                 viewModel.getUpperPage().setValue(0);
             });
-        }else{
+        } else {
             addNewTransactionItem(itemList);
             ivResult.setImageResource(R.drawable.rounded_check_24);
             tvResult.setText("记账成功");
@@ -117,56 +117,56 @@ public class TransactionsPage2Fragment extends Fragment {
     }
 
 
-    private CheckResult checkTransactionItem(List<EntryItem> itemList){
+    private CheckResult checkTransactionItem(List<EntryItem> itemList) {
         int checkingPosition = 0;
         BigDecimal creditGross = new BigDecimal(0);
         BigDecimal debitGross = new BigDecimal(0);
 
-        if(itemList == null || itemList.isEmpty()){
+        if (itemList == null || itemList.isEmpty()) {
             return new CheckResult(checkingPosition, CheckingStatus.NULL_TRANSACTION);
         }
 
-        if(viewModel.getSummary().getValue() == null){
+        if (viewModel.getSummary().getValue() == null) {
             return new CheckResult(checkingPosition, CheckingStatus.NULL_SUMMARY);
         }
 
-        for(EntryItem item : itemList){
+        for (EntryItem item : itemList) {
             SubjectNode subject = item.getSubjectLiveData().getValue();
             BigDecimal amount = new BigDecimal(item.getAmount());
             Integer direction = item.getDirectionLiveData().getValue();
 
-            if(subject != null || !amount.equals(BigDecimal.ZERO) || (direction != 0)){
-                if(subject == null){
+            if (subject != null || !amount.equals(BigDecimal.ZERO) || (direction != 0)) {
+                if (subject == null) {
                     return new CheckResult(checkingPosition, CheckingStatus.NULL_SUBJECT);
-                }else if(amount.equals(BigDecimal.ZERO)){
+                } else if (amount.equals(BigDecimal.ZERO)) {
                     return new CheckResult(checkingPosition, CheckingStatus.NULL_AMOUNT);
-                }else if(direction == 0){
+                } else if (direction == 0) {
                     return new CheckResult(checkingPosition, CheckingStatus.NULL_DIRECTION);
                 }
             }
 
-            if(direction == 1){
-               creditGross = creditGross.add(amount);
-            }else if(direction == -1){
-               debitGross = debitGross.add(amount);
+            if (direction == 1) {
+                creditGross = creditGross.add(amount);
+            } else if (direction == -1) {
+                debitGross = debitGross.add(amount);
             }
 
-            if(creditGross.equals(BigDecimal.ZERO) && debitGross.equals(BigDecimal.ZERO)){
+            if (creditGross.equals(BigDecimal.ZERO) && debitGross.equals(BigDecimal.ZERO)) {
                 return new CheckResult(checkingPosition, CheckingStatus.NULL_TRANSACTION);
             }
         }
 
-        if(creditGross.equals(debitGross)){
+        if (creditGross.equals(debitGross)) {
             return new CheckResult(checkingPosition, CheckingStatus.DONE);
-        }else{
+        } else {
             return new CheckResult(checkingPosition, CheckingStatus.UNBALANCED_ACCOUNTS);
         }
     }
 
-    public void addNewTransactionItem(List<EntryItem> itemList){
+    public void addNewTransactionItem(List<EntryItem> itemList) {
         TransactionManager transactionManager = new TransactionManager(db);
         int maxRowCount = transactionManager.getLastRowColumnValue();
-        for(EntryItem item : itemList){
+        for (EntryItem item : itemList) {
             String summary = viewModel.getSummary().getValue();
             Integer direction = item.getDirectionLiveData().getValue();
             BigDecimal amount = new BigDecimal(item.getAmount());
@@ -177,7 +177,7 @@ public class TransactionsPage2Fragment extends Fragment {
             assert subject != null;
             transactionManager.addNewTransaction(
                     currentTime,
-                    maxRowCount+1,
+                    maxRowCount + 1,
                     summary,
                     direction,
                     subject.getUuid(),

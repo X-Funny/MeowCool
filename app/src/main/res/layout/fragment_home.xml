@@ -1,28 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".page.initial_page.ui.home.HomeFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".page.initial_page.ui.home.HomeFragment">
-
-    <TextView
-        android:id="@+id/text_home"
+    android:layout_height="match_parent">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.071" />
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="1月1日"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                android:layout_marginTop="128dp"
+                android:layout_marginStart="16dp" />
+            <TextView
+                android:id="@+id/tv_greating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tv_date"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="Hello World"
+                android:textAppearance="?attr/textAppearanceHeadlineLarge"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp" />
+            <TextView
+                android:id="@+id/tv_accumulate_payment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/tv_greating"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="累计支出"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="16dp" />
+            <TextView
+                android:id="@+id/accumulate_payment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/tv_accumulate_payment"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="10.00"
+                android:textAppearance="?attr/textAppearanceDisplayMedium"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="16dp" />
+            <TextView
+                android:id="@+id/tv_accumulate_revenue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/accumulate_payment"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="累计收入"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="16dp" />
+            <TextView
+                android:id="@+id/accumulate_revenue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/tv_accumulate_revenue"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="10.00"
+                android:textAppearance="?attr/textAppearanceDisplayMedium"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="16dp" />
+            <TextView
+                android:id="@+id/tvResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="点击分析按钮，调用AI分析"
+                android:layout_marginTop="32dp"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/rounded_textview_selector"
+                app:layout_constraintTop_toBottomOf="@id/accumulate_revenue" />
+            <Button
+                android:id="@+id/btnAnalyze"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginHorizontal="16dp"
+                style="?attr/materialButtonOutlinedStyle"
+                android:text="分析"
+                app:layout_constraintTop_toBottomOf="@id/tvResult"
+                app:layout_constraintStart_toStartOf="parent"
+                android:onClick="onAnalyzeClick" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-    <!-- 右下角悬浮添加按钮 -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabAdd"
         style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Primary"
@@ -34,4 +112,9 @@
         app:icon="@drawable/rounded_add_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+   

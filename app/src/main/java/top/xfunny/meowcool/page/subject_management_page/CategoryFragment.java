@@ -45,7 +45,7 @@ public class CategoryFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(SubjectManagementViewModel.class);
 
 
-        transactionsViewModel = Objects.equals(requireArguments().getSerializable("mode"), SubjectAdapterMode.MODE_SELECT)?
+        transactionsViewModel = Objects.equals(requireArguments().getSerializable("mode"), SubjectAdapterMode.MODE_SELECT) ?
                 new ViewModelProvider(parentFragment).get(TransactionsViewModel.class) :
                 null;
 
@@ -54,7 +54,7 @@ public class CategoryFragment extends Fragment {
 
         adapter = Objects.equals(requireArguments().getSerializable("mode"), SubjectAdapterMode.MODE_SELECT) ?
                 new SubjectAdapter(requireContext(), (SubjectAdapterMode) requireArguments().getSerializable("mode"), transactionsViewModel) :
-                new SubjectAdapter(requireContext(),  (SubjectAdapterMode)requireArguments().getSerializable("mode"));
+                new SubjectAdapter(requireContext(), (SubjectAdapterMode) requireArguments().getSerializable("mode"));
 
         recyclerView.setAdapter(adapter);
 

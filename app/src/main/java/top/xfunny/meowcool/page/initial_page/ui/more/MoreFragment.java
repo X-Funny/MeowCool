@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -26,7 +25,7 @@ import top.xfunny.meowcool.R;
 import top.xfunny.meowcool.core.DatabaseManager;
 import top.xfunny.meowcool.databinding.FragmentMoreBinding;
 import top.xfunny.meowcool.page.account_management_page.AccountManagementPageActivity;
-import top.xfunny.meowcool.page.initial_page.ui.home.HomeViewModel;
+import top.xfunny.meowcool.page.settings_page.DsSettingsActivity;
 import top.xfunny.meowcool.page.subject_management_page.SubjectManagementPageActivity;
 import top.xfunny.meowcool.page.test_page.TestActivity;
 
@@ -92,14 +91,12 @@ public class MoreFragment extends Fragment {
         LinearLayout testPageButton = view.findViewById(R.id.test_activity);
         testPageButton.setOnClickListener(v -> {
             Intent intent = new Intent();
-            intent.setClass(requireActivity(), TestActivity.class);
+            intent.setClass(requireActivity(), DsSettingsActivity.class);
             startActivity(intent);
         });
     }
 
     //选择账套对话框
-
-
     public void showDatabaseSelectDialog(Context context) {
         // 获取数据库列表并去掉 .db 后缀
         String[] databaseList = DatabaseManager.getDatabaseList(context)

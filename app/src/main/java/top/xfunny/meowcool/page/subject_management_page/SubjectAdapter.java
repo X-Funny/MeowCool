@@ -3,7 +3,6 @@ package top.xfunny.meowcool.page.subject_management_page;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,7 +30,6 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
     private final List<SubjectNode> visibleNodes;
     private final SubjectAdapterMode mode;
     private TransactionsViewModel transactionsViewModel;
-
 
 
     public SubjectAdapter(Context context, SubjectAdapterMode mode) {// 编辑模式
@@ -77,21 +71,6 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
             if (node.isExpanded) {
                 flattenTree(node.children, level + 1);
             }
-        }
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        Space spaceIndent;
-        ImageView ivExpand;
-        TextView tvSubjectName;
-        TextView tvSubject_amount;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            spaceIndent = itemView.findViewById(R.id.spaceIndent);
-            ivExpand = itemView.findViewById(R.id.ivExpand);
-            tvSubjectName = itemView.findViewById(R.id.tvSubjectName);
-            tvSubject_amount = itemView.findViewById(R.id.tvSubject_amount);
         }
     }
 
@@ -161,17 +140,18 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                     ((AppCompatActivity) context).startActivityForResult(intent, 1001);
                 });
             }
+            holder.tvSubject_amount.setText("");
 
             holder.ivExpand.setClickable(true);
         } else {
             BigDecimal balance = new BigDecimal(0);
-            if(node.getDirection()==1){
+            if (node.getDirection() == 1) {
                 balance = balance.add(transactionManager.getTransactionDebit(node.getUuid())).subtract(transactionManager.getTransactionCredit(node.getUuid()));
-            }else if(node.getDirection()==-1){
+            } else if (node.getDirection() == -1) {
                 balance = balance.subtract(transactionManager.getTransactionDebit(node.getUuid())).add(transactionManager.getTransactionCredit(node.getUuid()));
             }
 
-            holder.tvSubject_amount.setText("¥ "+balance.toString());
+            holder.tvSubject_amount.setText("¥ " + balance.add(node.getInitialAmount()));
 
             // 如果没有子节点，隐藏展开/折叠图标
             holder.ivExpand.setVisibility(View.GONE);
@@ -186,10 +166,10 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
                 if (mode == SubjectAdapterMode.MODE_SELECT) {
                     // 传入所选中的subject node
                     transactionsViewModel.selectSubject(node);
-                }else{
+                } else {
                     Intent intent = new Intent(context, SubjectDetailActivity.class);
                     intent.putExtra("node", currentNode);
-                    context.startActivity(intent);
+                    ((AppCompatActivity) context).startActivityForResult(intent, 1001);
                 }
             });
         }
@@ -222,5 +202,20 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.ViewHold
     @Override
     public int getItemCount() {
         return visibleNodes.size();
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        Space spaceIndent;
+        ImageView ivExpand;
+        TextView tvSubjectName;
+        TextView tvSubject_amount;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            spaceIndent = itemView.findViewById(R.id.spaceIndent);
+            ivExpand = itemView.findViewById(R.id.ivExpand);
+            tvSubjectName = itemView.findViewById(R.id.tvSubjectName);
+            tvSubject_amount = itemView.findViewById(R.id.tvSubject_amount);
+        }
     }
 }
